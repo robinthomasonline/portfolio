@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Mobile Menu
 const menuBtn = document.querySelector('.menu-btn');
 const navLinks = document.querySelector('.nav-links');
+const closeIcon = document.querySelector('.close-icon');
 const socialIcons = document.querySelector('.social-icons');
 let menuOpen = false;
 
@@ -73,18 +74,45 @@ menuBtn.addEventListener('click', () => {
         navLinks.style.padding = '1rem';
         navLinks.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
         navLinks.style.backdropFilter = 'blur(10px)';
-        socialIcons.style.display = 'flex';
-        socialIcons.style.justifyContent = 'center';
-        socialIcons.style.padding = '1rem';
-        socialIcons.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        socialIcons.style.backdropFilter = 'blur(10px)';
+        if (socialIcons) {
+            socialIcons.style.display = 'flex';
+            socialIcons.style.justifyContent = 'center';
+            socialIcons.style.padding = '1rem';
+            socialIcons.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            socialIcons.style.backdropFilter = 'blur(10px)';
+        }
         menuOpen = true;
     } else {
         menuBtn.classList.remove('open');
         navLinks.style.display = 'none';
-        socialIcons.style.display = 'none';
+        if (socialIcons) {
+            socialIcons.style.display = 'none';
+        }
         menuOpen = false;
     }
+});
+
+// Close menu when close icon is clicked
+if (closeIcon) {
+    closeIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (menuOpen) {
+            menuBtn.classList.remove('open');
+            navLinks.style.display = 'none';
+            menuOpen = false;
+        }
+    });
+}
+
+// Close menu when a nav link is clicked (mobile only)
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && menuOpen) {
+            menuBtn.classList.remove('open');
+            navLinks.style.display = 'none';
+            menuOpen = false;
+        }
+    });
 });
 
 // Smooth Scrolling
@@ -197,37 +225,35 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Contact Form Handling
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form values
-    const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        subject: document.getElementById('subject').value,
-        message: document.getElementById('message').value
-    };
-
-    // Disable submit button and show loading state
-    const submitBtn = this.querySelector('.submit-btn');
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
-
-    // Here you would typically send the data to your backend
-    // For now, we'll simulate a submission
-    setTimeout(() => {
-        // Reset form
-        e.target.reset();
-        
-        // Show success message
-        alert('Thank you for your message! I will get back to you soon.');
-        
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-    }, 1500);
-});
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Get form values
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            subject: document.getElementById('subject').value,
+            message: document.getElementById('message').value
+        };
+        // Disable submit button and show loading state
+        const submitBtn = this.querySelector('.submit-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        // Here you would typically send the data to your backend
+        // For now, we'll simulate a submission
+        setTimeout(() => {
+            // Reset form
+            e.target.reset();
+            // Show success message
+            alert('Thank you for your message! I will get back to you soon.');
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }, 1500);
+    });
+}
 
 // Add smooth scrolling for contact links
 document.querySelectorAll('.contact-link').forEach(link => {

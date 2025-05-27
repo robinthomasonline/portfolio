@@ -44,10 +44,24 @@ body {
 .logo a {
     text-decoration: none;
     color: var(--text-color);
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(270deg, var(--primary-color), var(--secondary-color), #ff00cc, #00ffcc, #ff9900, #00bfff, #ff0066, #39ff14, #ffd700, var(--primary-color));
+    background-size: 900% 900%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     transition: opacity 0.3s ease;
+    animation: gradientMove 8s ease-in-out infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .logo a:hover {
@@ -78,7 +92,32 @@ body {
 /* Mobile Menu */
 .menu-btn {
     display: none;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    z-index: 2000;
+}
+
+.menu-btn .close-icon {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 2rem;
+    color: var(--text-color);
     cursor: pointer;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 30px;
+}
+
+.menu-btn.open .bar {
+    display: none;
+}
+
+.menu-btn.open .close-icon {
+    display: block;
 }
 
 .bar {
@@ -97,6 +136,10 @@ body {
 
     .menu-btn {
         display: block;
+    }
+
+    .scroll-indicator {
+        display: none;
     }
 }
 
