@@ -166,6 +166,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 4rem;
+    position: relative;
 }
 
 .hero-text {
@@ -1580,7 +1581,7 @@ a, button, .btn, .project-card, .business-card, .expertise-card, .contact-link, 
 .marquee-container {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
     width: 100%;
     overflow: hidden;
 }

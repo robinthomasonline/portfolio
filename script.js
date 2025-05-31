@@ -19,6 +19,19 @@ let typingDelay = 200;
 let erasingDelay = 100;
 let newTextDelay = 2000;
 
+function isVowel(char) {
+    return ['a', 'e', 'i', 'o', 'u'].includes(char.toLowerCase());
+}
+
+function updateStaticText(word) {
+    const staticText = document.querySelector('.static-text');
+    if (word && isVowel(word[0])) {
+        staticText.textContent = 'I am an';
+    } else {
+        staticText.textContent = 'I am a';
+    }
+}
+
 function typeEffect() {
     const currentRole = texts[roleIndex];
     const typingText = document.getElementById('typing-text');
@@ -34,6 +47,9 @@ function typeEffect() {
         charIndex++;
         typingDelay = 200;
     }
+
+    // Update static text based on the current word
+    updateStaticText(currentRole);
 
     // If word is complete
     if (!isDeleting && charIndex === currentRole.length) {
@@ -52,6 +68,8 @@ function typeEffect() {
 
 // Start the typing effect
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize with the first word
+    updateStaticText(texts[0]);
     setTimeout(typeEffect, newTextDelay);
 });
 
