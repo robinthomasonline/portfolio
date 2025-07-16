@@ -1,5 +1,6 @@
 // Typing Effect
 const texts = [
+    "Vibe Coder",
     "Enterprenuer",
     "GRC Consultant",
     "Infrastructure Consultant",
