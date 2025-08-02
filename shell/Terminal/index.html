@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Terminal - Robin</title>
+  <link href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #232323;
+      color: #e0e0e0;
+      font-family: 'Fira Mono', 'Consolas', 'Monaco', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+    .left-panel {
+      background: #181818;
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-right: 2px solid #2e2e2e;
+      position: relative;
+    }
+    .card-img {
+      width: 220px;
+      height: 320px;
+      background: #333;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 16px #000a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1);
+    }
+    .card-label {
+      color: #8ae234;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+    .terminal-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #232323;
+      padding: 0;
+      position: relative;
+    }
+    .terminal {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow: hidden;
+    }
+    .output {
+      flex: 1;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+      font-size: 1em;
+    }
+    .input-line {
+      display: flex;
+      align-items: center;
+      font-size: 1em;
+    }
+    .prompt {
+      color: #8ae234;
+      margin-right: 6px;
+      user-select: none;
+      font-weight: bold;
+    }
+    .cmd-input {
+      background: transparent;
+      border: none;
+      color: #e0e0e0;
+      font: inherit;
+      outline: none;
+      width: 100%;
+      caret-color: #8ae234;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .input-line {
+      display: flex;
+      align-items: center;
+      font-size: 1em;
+      width: 100%;
+    }
+    ::selection {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="card-img">
+        <img src="card.png" alt="Card" />
+      </div>
+      <div class="card-label">Robin Thomas</div>
+    </div>
+    <div class="terminal-panel">
+      <div class="terminal">
+        <div class="output" id="output"></div>
+        <div class="input-line">
+          <span class="prompt" id="prompt">robin@localhost:~$</span>
+          <input type="text" class="cmd-input" id="cmdInput" autofocus autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const output = document.getElementById('output');
+    const cmdInput = document.getElementById('cmdInput');
+    const prompt = document.getElementById('prompt').textContent;
+    const commandHistory = [];
+    let historyIndex = 0;
+
+    // A safer way to print output to avoid potential XSS with user input.
+    // It also makes it easier to add styled lines.
+    function printLine(text) {
+      const line = document.createElement('div');
+      line.innerHTML = text;
+      output.appendChild(line);
+    }
+
+    function printOutput(text) {
+      text.split('\n').forEach(line => printLine(line));
+      output.scrollTop = output.scrollHeight;
+    }
+
+    const commands = {
+      help: `
+        <span style='color:#8ae234'>Available commands:</span>
+        <span style='color:#e0e0e0'>about</span>          - Learn about me
+        <span style='color:#e0e0e0'>skills</span>         - My technical expertise
+        <span style='color:#e0e0e0'>experience</span>     - Professional timeline
+        <span style='color:#e0e0e0'>contact</span>        - How to reach me
+        <span style='color:#e0e0e0'>education</span>      - Academic background
+        <span style='color:#e0e0e0'>certifications</span> - Professional certifications
+        <span style='color:#e0e0e0'>leadership</span>     - Leadership experience
+        <span style='color:#e0e0e0'>clear</span>          - Clear terminal
+        <span style='color:#e0e0e0'>sudo</span>           - Superuser access
+
+        Type any command to continue...`,
+      about: `<span style='color:#8ae234'>About Me:</span>
+        Technology Leader & Solutions Architect based in Abbotsford, NSW.
+        Over 9 years of experience in IT infrastructure, security, and business technology solutions.
+        Right to Work: Temporary Graduate Visa (485) with full working rights.
+        
+        Currently leading innovative solutions through UTF Innovations and Bitstrail, focusing on cloud infrastructure, 
+        security, and managed IT services.`,
+      skills: `<span style='color:#8ae234'>Technical Skills:</span>
+
+        • Infrastructure & Cloud:
+          - AWS, GCP, Docker, Kubernetes
+          - VMware, Proxmox, OpenStack
+          - High Availability & Load Balancing
+
+        • Security:
+          - PCI DSS & ISO 27001
+          - Penetration Testing & VAPT
+          - Firewall & Network Security
+
+        • Development:
+          - Python, JavaScript, TypeScript
+          - React, Next.js, React Native
+          - Shell Scripting, Automation
+
+        • DevOps:
+          - Ansible, Terraform
+          - CI/CD, Git, Docker
+          - Infrastructure as Code`,
+      experience: `<span style='color:#8ae234'>Professional Experience:</span>
+
+        • Co-Founder & CEO | UTF Innovations (Opsbin) | Sep 2022 – Apr 2025
+          Led IT support services and solutions platform
+
+        • GRC Consultant | ValueMentor Infosec | Aug 2021 – Jul 2022
+          Conducted PCI DSS audits and security assessments
+
+        • Head of Systems | Poornam Info Vision | Nov 2019 – Aug 2021
+          Managed server infrastructure and security operations
+
+        • System Administrator | Poornam Info Vision | May 2017 – Oct 2019
+          Handled Linux/Windows servers and security
+
+        • Server Administrator | Aforeserve.com | Oct 2015 – May 2017
+          Managed EDMS project infrastructure`,
+      contact: `<span style='color:#8ae234'>Contact Information:</span>
+
+        • Email: robinthomasonline@gmail.com
+        • Phone: 0423453240
+        • LinkedIn: linkedin.com/in/robinthomasonline
+        • Location: Abbotsford, NSW, 2046`,
+      education: `<span style='color:#8ae234'>Education:</span>
+
+        • Bachelor of Science (B.Sc.), Electronics
+          Kannur University, College of Applied Science, Pattuvam
+          Graduated: 2014`,
+      certifications: `<span style='color:#8ae234'>Professional Certifications:</span>
+
+        • Certified Ethical Hacking Associate (E|HA), EC-Council (2021)
+        • Certified Cyber Forensics Associate (C|FA), EC-Council (2021)
+        • Microsoft Technology Associate: Security Fundamentals (2020)
+        • Introduction to Cybersecurity, Cisco (2019)
+        • Red Hat Certified System Administrator (RHCSA) (2018)`,
+      leadership: `<span style='color:#8ae234'>Leadership Highlights:</span>
+
+        • Led teams of 15+ professionals across multiple projects
+        • Managed 1000+ servers & cloud instances
+        • Conducted 10+ PCI DSS compliance projects
+        • Developed business strategies and growth initiatives
+        • Mentored junior team members and new hires
+        • Implemented enterprise-wide security measures
+        • Led digital transformation initiatives`,
+      sudo: "Permission denied: User not in sudoers file. This incident will be reported.",
+      clear: () => { output.innerHTML = ''; },
+      pwd: () => {
+        printOutput('/home/robin');
+      },
+      ls: () => {
+        printOutput(`about.txt  skills.md  experience.pdf  contact.txt  
+certifications/  education/  projects/`);
+      },
+      whoami: () => {
+        printOutput('robin');
+      },
+      date: () => {
+        printOutput(new Date().toString());
+      },
+      exit: () => {
+        printOutput('Connection to portfolio closed.');
+        setTimeout(() => {
+          window.close();
+        }, 1000);
+      }
+    };
+
+    function handleCommand(cmd) {
+      if (cmd.trim() === '') return;
+      
+      // Add to history if not empty
+      if (cmd.trim()) {
+        commandHistory.push(cmd);
+        historyIndex = commandHistory.length;
+      }
+      
+      // Echo the command
+      printOutput(`${prompt} ${cmd}`);
+      
+      // Process the command
+      const commandToRun = cmd.toLowerCase().trim();
+      
+      if (commandToRun === 'clear') {
+        commands.clear();
+      } else if (commands.hasOwnProperty(commandToRun)) {
+        const result = commands[commandToRun];
+        if (typeof result === 'function') {
+          result();
+        } else {
+          printOutput(result);
+        }
+      } else if (commandToRun.startsWith('echo ')) {
+        printOutput(cmd.slice(5));
+      } else {
+        printOutput(`bash: ${cmd}: command not found`);
+      }
+      
+      // Ensure we're scrolled to the bottom
+      output.scrollTop = output.scrollHeight;
+    }
+
+    cmdInput.addEventListener('keydown', function(e) {
+      switch(e.key) {
+        case 'Enter':
+          const cmd = cmdInput.value;
+          if (cmd.trim()) {
+            commandHistory.push(cmd);
+            historyIndex = commandHistory.length;
+          }
+          handleCommand(cmd);
+          cmdInput.value = '';
+          break;
+          
+        case 'ArrowUp':
+          e.preventDefault();
+          if (historyIndex > 0) {
+            historyIndex--;
+            cmdInput.value = commandHistory[historyIndex];
+          }
+          break;
+          
+        case 'ArrowDown':
+          e.preventDefault();
+          if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            cmdInput.value = commandHistory[historyIndex];
+          } else {
+            historyIndex = commandHistory.length;
+            cmdInput.value = '';
+          }
+          break;
+          
+        case 'Tab':
+          e.preventDefault();
+          // Basic command completion
+          const input = cmdInput.value.toLowerCase();
+          const possibilities = Object.keys(commands).filter(cmd => cmd.startsWith(input));
+          if (possibilities.length === 1) {
+            cmdInput.value = possibilities[0];
+          }
+          break;
+      }
+    });
+
+    document.querySelector('.terminal').addEventListener('click', () => {
+      cmdInput.focus();
+    });
+
+    // Initial welcome message
+    printOutput(`
+    ██████╗  ██████╗ ██████╗ ██╗███╗   ██╗
+    ██╔══██╗██╔═══██╗██╔══██╗██║████╗  ██║
+    ██████╔╝██║   ██║██████╔╝██║██╔██╗ ██║
+    ██╔══██╗██║   ██║██╔══██╗██║██║╚██╗██║
+    ██║  ██║╚██████╔╝██████╔╝██║██║ ╚████║
+    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝
+                                                                                                                  
+<span style='color:#8ae234'>Portfolio Terminal v1.0.0</span>
+Copyright (c) 2025 Robin Thomas. All rights reserved.
+
+Type 'help' to see available commands.`);
+
+
+  </script>
+</body>
+</html>
