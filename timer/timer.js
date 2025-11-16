@@ -98,7 +98,12 @@ class WorkTimer {
             const totalElapsed = this.elapsedTime + elapsed;
             const remaining = Math.max(0, this.countdownDuration - totalElapsed);
             
-            if (remaining <= 0 && this.timer) {
+            if (remaining <= 0) {
+                // Clear timer immediately to prevent multiple calls
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
                 this.onCountdownComplete();
                 return;
             }
@@ -251,11 +256,21 @@ class WorkTimer {
     }
 
     onCountdownComplete() {
-        // Stop the timer
+        // Stop the timer first - ensure it's completely stopped
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
+        
+        // Clear startTime to ensure timer is fully stopped
+        if (this.startTime) {
+            const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+            this.elapsedTime += elapsed;
+            this.startTime = null;
+        }
+
+        // Store duration before resetting
+        const completedDuration = this.countdownDuration;
 
         // Play notification sound
         this.playNotification();
@@ -263,38 +278,68 @@ class WorkTimer {
         // Show notification
         if (Notification.permission === 'granted') {
             new Notification('Timer Complete!', {
-                body: `Your ${this.countdownDuration / 60} minute timer has finished.`,
+                body: `Your ${completedDuration / 60} minute timer has finished.`,
                 icon: '/timer/favicon.ico'
             });
         }
 
         // Update circular timer - show final elapsed time
-        this.circularTimeDisplay.textContent = this.formatTimeShort(this.countdownDuration);
-        this.remainingTime.textContent = 'Timer Complete!';
-        this.circularStatus.textContent = 'Complete';
-        this.circularStatus.style.color = 'var(--success-color)';
-        this.progressBar.style.strokeDashoffset = 0;
-        this.progressBar.style.stroke = 'var(--success-color)';
+        if (this.circularTimeDisplay) {
+            this.circularTimeDisplay.textContent = this.formatTimeShort(completedDuration);
+        }
+        if (this.remainingTime) {
+            this.remainingTime.textContent = 'Timer Complete!';
+        }
+        if (this.circularStatus) {
+            this.circularStatus.textContent = 'Complete';
+            this.circularStatus.style.color = 'var(--success-color)';
+        }
+        if (this.progressBar) {
+            this.progressBar.style.strokeDashoffset = 0;
+            this.progressBar.style.stroke = 'var(--success-color)';
+        }
+
+        // Add to history if time was spent
+        if (this.elapsedTime > 0) {
+            this.addToHistory(`Quick Timer (${completedDuration / 60} min)`, this.elapsedTime);
+            this.saveHistory();
+            this.renderHistory();
+            this.updateStats();
+        }
 
         // Reset state
         this.elapsedTime = 0;
         this.isCountdown = false;
         this.countdownDuration = 0;
         this.currentTask = null;
-        this.currentTaskDisplay.textContent = 'Timer Complete!';
-        this.timeDisplay.textContent = '00:00:00';
-        this.timeDisplay.style.color = 'var(--success-color)';
+        
+        if (this.currentTaskDisplay) {
+            this.currentTaskDisplay.textContent = 'Timer Complete!';
+        }
+        if (this.timeDisplay) {
+            this.timeDisplay.textContent = '00:00:00';
+            this.timeDisplay.style.color = 'var(--success-color)';
+        }
 
-        this.startBtn.disabled = false;
-        this.pauseBtn.disabled = true;
-        this.stopBtn.disabled = true;
+        // Update button states
+        if (this.startBtn) this.startBtn.disabled = false;
+        if (this.pauseBtn) this.pauseBtn.disabled = true;
+        if (this.stopBtn) this.stopBtn.disabled = true;
 
         // Reset after 3 seconds and switch back to regular display
         setTimeout(() => {
-            this.circularTimer.style.display = 'none';
-            this.regularTimerDisplay.style.display = 'block';
-            this.timeDisplay.style.color = '';
-            this.currentTaskDisplay.textContent = 'No active task';
+            if (this.circularTimer) {
+                this.circularTimer.style.display = 'none';
+            }
+            if (this.regularTimerDisplay) {
+                this.regularTimerDisplay.style.display = 'block';
+            }
+            if (this.timeDisplay) {
+                this.timeDisplay.style.color = '';
+            }
+            if (this.currentTaskDisplay) {
+                this.currentTaskDisplay.textContent = 'No active task';
+            }
         }, 3000);
     }
 
@@ -336,6 +381,8 @@ class WorkTimer {
     }
 
     stopTimer() {
+        // Calculate elapsed time before clearing startTime
+        let timeSpent = 0;
         if (this.startTime) {
             if (this.isCountdown) {
                 const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
@@ -343,7 +390,11 @@ class WorkTimer {
             } else {
                 this.elapsedTime += Math.floor((Date.now() - this.startTime) / 1000);
             }
+            timeSpent = this.elapsedTime;
             this.startTime = null;
+        } else {
+            // If startTime is null, use elapsedTime directly
+            timeSpent = this.elapsedTime;
         }
 
         if (this.timer) {
@@ -353,20 +404,39 @@ class WorkTimer {
 
         // Handle countdown timer
         if (this.isCountdown) {
-            const elapsed = this.startTime ? Math.floor((Date.now() - this.startTime) / 1000) : 0;
-            const timeSpent = this.elapsedTime + elapsed;
             if (timeSpent > 0) {
                 this.addToHistory(`Quick Timer (${this.countdownDuration / 60} min)`, timeSpent);
                 this.saveHistory();
                 this.renderHistory();
                 this.updateStats();
             }
+            
+            // Reset countdown state
             this.isCountdown = false;
+            const duration = this.countdownDuration;
             this.countdownDuration = 0;
+            this.elapsedTime = 0;
             
             // Hide circular timer, show regular display
-            this.circularTimer.style.display = 'none';
-            this.regularTimerDisplay.style.display = 'block';
+            if (this.circularTimer) {
+                this.circularTimer.style.display = 'none';
+            }
+            if (this.regularTimerDisplay) {
+                this.regularTimerDisplay.style.display = 'block';
+            }
+            
+            // Reset button states
+            if (this.startBtn) this.startBtn.disabled = false;
+            if (this.pauseBtn) this.pauseBtn.disabled = true;
+            if (this.stopBtn) this.stopBtn.disabled = true;
+            
+            // Reset displays
+            if (this.timeDisplay) {
+                this.timeDisplay.textContent = '00:00:00';
+            }
+            if (this.currentTaskDisplay) {
+                this.currentTaskDisplay.textContent = 'No active task';
+            }
         } else if (this.currentTask && this.elapsedTime > 0) {
             // Handle regular task timer
             const task = this.tasks.find(t => t.id === this.currentTask);
