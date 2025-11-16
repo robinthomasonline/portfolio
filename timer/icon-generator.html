@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Generator for PWA</title>
+    <style>
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        .icon-container {
+            background: #000;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .icon-192 {
+            width: 192px;
+            height: 192px;
+        }
+        .icon-512 {
+            width: 512px;
+            height: 512px;
+        }
+        .icon-content {
+            text-align: center;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .icon-192 .icon-content {
+            font-size: 48px;
+        }
+        .icon-512 .icon-content {
+            font-size: 120px;
+        }
+        .instructions {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 2rem;
+        }
+        .instructions h2 {
+            margin-top: 0;
+        }
+        .instructions ol {
+            line-height: 1.8;
+        }
+        button {
+            background: #fff;
+            color: #000;
+            border: 2px solid #fff;
+            padding: 1rem 2rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        button:hover {
+            background: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>PWA Icon Generator</h1>
+    
+    <div class="instructions">
+        <h2>Instructions:</h2>
+        <ol>
+            <li>Right-click on each icon below and select "Save image as..." or use a screenshot tool</li>
+            <li>Save the 192x192 icon as <code>icon-192.png</code></li>
+            <li>Save the 512x512 icon as <code>icon-512.png</code></li>
+            <li>Place both files in the <code>timer</code> folder</li>
+            <li>Alternatively, use an online tool like <a href="https://realfavicongenerator.net/" target="_blank" style="color: #fff;">RealFaviconGenerator</a> to create icons</li>
+        </ol>
+    </div>
+
+    <div>
+        <h3>192x192 Icon (for manifest)</h3>
+        <canvas id="icon192" width="192" height="192" class="icon-container icon-192"></canvas>
+        <br>
+        <button onclick="downloadIcon('icon192', 'icon-192.png')">Download 192x192</button>
+    </div>
+
+    <div>
+        <h3>512x512 Icon (for manifest)</h3>
+        <canvas id="icon512" width="512" height="512" class="icon-container icon-512"></canvas>
+        <br>
+        <button onclick="downloadIcon('icon512', 'icon-512.png')">Download 512x512</button>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // Fill background
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw border
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = size / 32;
+            ctx.strokeRect(size / 16, size / 16, size - size / 8, size - size / 8);
+            
+            // Draw clock/timer icon
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size * 0.3;
+            
+            // Draw circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = size / 64;
+            ctx.stroke();
+            
+            // Draw hands (showing 12:00)
+            const handLength = radius * 0.6;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX, centerY - handLength);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = size / 96;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + handLength * 0.7, centerY);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = size / 96;
+            ctx.stroke();
+            
+            // Draw center dot
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, size / 64, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+        }
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Draw icons on load
+        window.addEventListener('load', () => {
+            drawIcon(document.getElementById('icon192'), 192);
+            drawIcon(document.getElementById('icon512'), 512);
+        });
+    </script>
+</body>
+</html>
+

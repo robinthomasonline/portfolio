@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Track your work and tasks with a retro-style timer">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Work Timer">
+    <title>Work Timer | Track Your Tasks</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="timer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Digital-7:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="timer-container">
+        <div class="timer-main">
+            <!-- Timer Display -->
+            <div class="timer-display-section">
+                <!-- Circular Progress for Preset Timers -->
+                <div class="circular-timer" id="circularTimer" style="display: none;">
+                    <div class="circular-progress-wrapper">
+                        <svg class="circular-progress" viewBox="0 0 200 200">
+                            <circle class="progress-bg" cx="100" cy="100" r="90"></circle>
+                            <circle class="progress-bar" id="progressBar" cx="100" cy="100" r="90"></circle>
+                        </svg>
+                        <div class="circular-time-content">
+                            <div class="circular-time" id="circularTimeDisplay">00:00</div>
+                            <div class="circular-status" id="circularStatus">Ready</div>
+                        </div>
+                    </div>
+                    <div class="remaining-time" id="remainingTime">Remaining time: 00:00</div>
+                </div>
+                
+                <!-- Regular Timer Display -->
+                <div class="timer-display" id="regularTimerDisplay">
+                    <div class="time-display" id="timeDisplay">00:00:00</div>
+                    <div class="current-task" id="currentTask">No active task</div>
+                </div>
+                <div class="preset-timers">
+                    <h3>Quick Start</h3>
+                    <div class="preset-buttons">
+                        <button class="btn-preset" data-minutes="5" onclick="timer.startPresetTimer(5)">
+                            <i class="fas fa-bolt"></i> 5 Min
+                        </button>
+                        <button class="btn-preset" data-minutes="10" onclick="timer.startPresetTimer(10)">
+                            <i class="fas fa-bolt"></i> 10 Min
+                        </button>
+                        <button class="btn-preset" data-minutes="30" onclick="timer.startPresetTimer(30)">
+                            <i class="fas fa-bolt"></i> 30 Min
+                        </button>
+                        <button class="btn-preset" data-minutes="60" onclick="timer.startPresetTimer(60)">
+                            <i class="fas fa-bolt"></i> 1 Hour
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Time Picker Modal -->
+                <div class="time-picker-modal" id="timePickerModal">
+                    <div class="time-picker-overlay" onclick="timer.closeCustomTimePicker()"></div>
+                    <div class="time-picker-container">
+                        <div class="time-picker-header">
+                            <h3>SET CUSTOM TIME</h3>
+                            <button class="time-picker-close" onclick="timer.closeCustomTimePicker()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="time-picker-wheels-wrapper">
+                            <div class="time-picker-labels">
+                                <div class="time-wheel-label">HOURS</div>
+                                <div class="time-wheel-label-spacer"></div>
+                                <div class="time-wheel-label">MINUTES</div>
+                            </div>
+                            <div class="time-picker-wheels">
+                                <div class="time-wheel" id="hoursWheel">
+                                    <div class="wheel-content" id="hoursContent"></div>
+                                </div>
+                                <div class="time-wheel-separator">:</div>
+                                <div class="time-wheel" id="minutesWheel">
+                                    <div class="wheel-content" id="minutesContent"></div>
+                                </div>
+                            </div>
+                            <div class="time-picker-selection">
+                                <div class="selection-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="time-picker-actions">
+                            <button class="btn-picker-cancel" onclick="timer.closeCustomTimePicker()">Cancel</button>
+                            <button class="btn-picker-start" onclick="timer.startCustomTimer()">Start</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="timer-controls">
+                    <button class="btn-timer btn-start" id="startBtn">
+                        <i class="fas fa-play"></i> Start
+                    </button>
+                    <button class="btn-timer btn-pause" id="pauseBtn" disabled>
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button class="btn-timer btn-stop" id="stopBtn" disabled>
+                        <i class="fas fa-stop"></i> Stop
+                    </button>
+                </div>
+            </div>
+
+            <!-- Task Input -->
+            <div class="task-input-section">
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="Enter task name..." class="task-input">
+                    <button class="btn-add" id="addTaskBtn">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Tasks -->
+            <div class="tasks-section">
+                <h2><i class="fas fa-tasks"></i> Active Tasks</h2>
+                <div class="tasks-list" id="activeTasksList">
+                    <div class="empty-state">No active tasks. Add a task to start tracking!</div>
+                </div>
+            </div>
+
+            <!-- Task History -->
+            <div class="history-section">
+                <div class="history-header">
+                    <h2><i class="fas fa-history"></i> Task History</h2>
+                    <div class="history-actions">
+                        <button class="btn-export" id="exportHistoryBtn">
+                            <i class="fas fa-download"></i> Export CSV
+                        </button>
+                        <button class="btn-clear" id="clearHistoryBtn">
+                            <i class="fas fa-trash"></i> Clear History
+                        </button>
+                    </div>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="empty-state">No completed tasks yet.</div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-section">
+                <h2><i class="fas fa-chart-bar"></i> Today's Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalTimeToday">0h 0m</div>
+                            <div class="stat-label">Total Time</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="tasksCompleted">0</div>
+                            <div class="stat-label">Tasks Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="avgTaskTime">0m</div>
+                            <div class="stat-label">Avg Task Time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="timer.js"></script>
+</body>
+</html>
+

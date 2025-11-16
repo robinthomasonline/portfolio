@@ -1,0 +1,1491 @@
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #ffffff;
+    --background-color: #f5f5f5;
+    --text-color: #000000;
+    --panel-bg: #1a1a1a;
+    --panel-dark: #0a0a0a;
+    --card-bg: rgba(26, 26, 26, 0.95);
+    --card-border: rgba(255, 255, 255, 0.3);
+    --success-color: #ffffff;
+    --danger-color: #ffffff;
+    --warning-color: #ffffff;
+    --digital-glow: rgba(255, 255, 255, 0.9);
+    --border-color: #000000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+body {
+    background: var(--background-color);
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 4px
+        );
+    color: var(--text-color);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding: 2rem;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    position: relative;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.timer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.timer-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Timer Display Section */
+.timer-display-section {
+    background: var(--panel-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 0;
+    padding: 4rem 3rem;
+    text-align: center;
+    position: relative;
+    clip-path: polygon(
+        20px 0, 
+        calc(100% - 20px) 0, 
+        100% 20px, 
+        100% calc(100% - 20px), 
+        calc(100% - 20px) 100%, 
+        20px 100%, 
+        0 calc(100% - 20px), 
+        0 20px
+    );
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Circular Progress Timer */
+.circular-timer {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.circular-progress-wrapper {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.circular-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.progress-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 12;
+}
+
+.progress-bar {
+    fill: none;
+    stroke: var(--success-color);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 565.48;
+    stroke-dashoffset: 565.48;
+    transition: stroke-dashoffset 0.3s ease;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+.circular-time-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.circular-time {
+    font-size: 4rem;
+    font-weight: 400;
+    color: var(--primary-color);
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    padding: 0;
+    line-height: 1;
+    text-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.5),
+        0 0 10px rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.15em;
+    font-family: 'Orbitron', 'Share Tech Mono', monospace;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+    white-space: nowrap;
+    display: block;
+}
+
+.circular-status {
+    font-size: 1rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    white-space: nowrap;
+    display: block;
+}
+
+.remaining-time {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.timer-display {
+    margin-bottom: 2rem;
+}
+
+.time-display {
+    font-size: 6rem;
+    font-weight: 400;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.15em;
+    font-family: 'Orbitron', 'Share Tech Mono', monospace;
+    text-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.5),
+        0 0 10px rgba(255, 255, 255, 0.3);
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+.current-task {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.preset-timers {
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.preset-timers h3 {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-preset {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 100px;
+    min-height: 44px;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.05);
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.btn-preset::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: -1;
+}
+
+.btn-preset:hover {
+    border-color: var(--primary-color);
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.btn-preset:hover::before {
+    opacity: 0.1;
+}
+
+.btn-preset:active {
+    transform: translateY(0);
+}
+
+.btn-custom {
+    border-color: var(--primary-color) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Time Picker Modal */
+.time-picker-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-picker-modal.active {
+    display: flex;
+}
+
+.time-picker-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.time-picker-container {
+    position: relative;
+    background: var(--panel-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 0;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    z-index: 10001;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.time-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--card-border);
+}
+
+.time-picker-header h3 {
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.time-picker-close {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.time-picker-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.time-picker-wheels-wrapper {
+    position: relative;
+    margin: 2rem 0;
+}
+
+.time-picker-labels {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.time-wheel-label {
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    opacity: 0.7;
+    width: 80px;
+    text-align: center;
+}
+
+.time-wheel-label-spacer {
+    width: 30px;
+}
+
+.time-picker-wheels {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    height: 200px;
+}
+
+.time-wheel {
+    width: 80px;
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+    border: 2px solid var(--card-border);
+    background: rgba(0, 0, 0, 0.3);
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    z-index: 2;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+}
+
+.time-wheel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.time-wheel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.time-wheel::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    opacity: 0.5;
+}
+
+.wheel-content {
+    display: flex;
+    flex-direction: column;
+    padding: 80px 0;
+}
+
+.wheel-item {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-family: 'Orbitron', 'Share Tech Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 400;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    scroll-snap-align: center;
+    flex-shrink: 0;
+}
+
+.wheel-item.selected {
+    color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    opacity: 1;
+}
+
+.wheel-item:not(.selected) {
+    opacity: 0.4;
+}
+
+.time-wheel-separator {
+    color: var(--primary-color);
+    font-family: 'Orbitron', 'Share Tech Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    align-self: center;
+    line-height: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+}
+
+.time-picker-selection {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(80px + 1rem + 30px + 1rem + 80px);
+    height: 200px;
+    pointer-events: none;
+    z-index: 1;
+    margin-top: 0;
+}
+
+.selection-indicator {
+    width: 100%;
+    height: 40px;
+    border-top: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.time-picker-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-picker-cancel,
+.btn-picker-start {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-picker-cancel:hover,
+.btn-picker-start:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-picker-start {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.timer-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-timer {
+    padding: 1rem 2rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 140px;
+    min-height: 44px;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    position: relative;
+    background: transparent;
+    color: var(--primary-color);
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-timer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: -1;
+}
+
+.btn-timer:hover:not(:disabled)::before {
+    opacity: 0.15;
+}
+
+.btn-timer:active:not(:disabled) {
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-start {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-pause {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-pause::before {
+    background: var(--primary-color);
+}
+
+.btn-stop {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-stop::before {
+    background: var(--primary-color);
+}
+
+.btn-timer:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Task Input Section */
+.task-input-section {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.task-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: 'Share Tech Mono', monospace;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.task-input:focus {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.3),
+        inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.task-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-add {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-add::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: -1;
+}
+
+.btn-add:hover {
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-add:hover::before {
+    opacity: 0.1;
+}
+
+/* Tasks Section */
+.tasks-section,
+.history-section {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    padding: 2rem;
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.tasks-section h2,
+.history-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.tasks-list,
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.task-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.1),
+        inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.task-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary-color);
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.task-item.active {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.4),
+        inset 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.task-info {
+    flex: 1;
+}
+
+.task-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.task-time {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    opacity: 0.7;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-height: 44px;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.05);
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.btn-action.delete {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-action.delete:hover {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.btn-edit {
+    padding: 0.5rem;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edit:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+}
+
+/* History Section */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.history-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.btn-export {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: 0;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.05);
+}
+
+.btn-export:hover {
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-clear {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: 0;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.05);
+}
+
+.btn-clear:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.history-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.1),
+        inset 0 0 5px rgba(0, 0, 0, 0.2);
+    gap: 1rem;
+}
+
+.history-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-name-editable {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.task-name-display {
+    display: inline-block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    word-break: break-word;
+}
+
+.task-name-edit {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    outline: none;
+}
+
+.task-name-edit:focus {
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+.history-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.history-date {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+/* Statistics Section */
+.stats-section {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    padding: 2rem;
+    box-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.stats-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.1),
+        inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    opacity: 0.7;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    .timer-container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .timer-main {
+        gap: 1rem;
+    }
+
+    .timer-display-section {
+        padding: 2rem 1.5rem;
+        clip-path: polygon(
+            10px 0, 
+            calc(100% - 10px) 0, 
+            100% 10px, 
+            100% calc(100% - 10px), 
+            calc(100% - 10px) 100%, 
+            10px 100%, 
+            0 calc(100% - 10px), 
+            0 10px
+        );
+    }
+
+    .time-display {
+        font-size: 2.5rem;
+    }
+
+    .current-task {
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .preset-timers h3 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .circular-progress-wrapper {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+    }
+
+    .circular-time {
+        font-size: 2rem;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .circular-status {
+        font-size: 0.75rem;
+        line-height: 1;
+    }
+
+    .remaining-time {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    .timer-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .btn-timer {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .task-input-section {
+        padding: 1rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .task-input {
+        width: 100%;
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+
+    .btn-add {
+        width: 100%;
+        padding: 0.875rem;
+    }
+
+    .tasks-section,
+    .history-section,
+    .stats-section {
+        padding: 1.5rem;
+    }
+
+    .tasks-section h2,
+    .history-section h2,
+    .stats-section h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .task-item {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .task-info {
+        width: 100%;
+    }
+
+    .task-name {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .task-time {
+        font-size: 0.85rem;
+    }
+
+    .task-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .preset-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .btn-preset {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .history-actions {
+        width: 100%;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .btn-export,
+    .btn-clear {
+        flex: 1;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .history-item {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .history-info {
+        width: 100%;
+    }
+
+    .history-item-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .task-name-display,
+    .task-name-edit {
+        font-size: 1rem;
+    }
+
+    .history-date {
+        font-size: 0.8rem;
+    }
+
+    /* Time Picker Modal */
+    .time-picker-modal {
+        padding: 1rem;
+    }
+
+    .time-picker-container {
+        max-width: 100%;
+        padding: 1.5rem 1rem;
+        margin: 1rem;
+    }
+
+    .time-picker-header h3 {
+        font-size: 1rem;
+    }
+
+    .time-picker-wheels {
+        gap: 0.5rem;
+        height: 180px;
+        margin: 1.5rem 0;
+    }
+
+    .time-wheel {
+        width: 70px;
+        height: 180px;
+    }
+
+    .time-wheel-label {
+        width: 70px;
+        font-size: 0.7rem;
+    }
+
+    .time-wheel-separator {
+        font-size: 1.8rem;
+        height: 180px;
+        line-height: 180px;
+    }
+
+    .time-picker-selection {
+        width: calc(70px + 0.5rem + 30px + 0.5rem + 70px);
+        height: 180px;
+    }
+
+    .wheel-item {
+        height: 36px;
+        font-size: 1.2rem;
+    }
+
+    .wheel-item.selected {
+        font-size: 1.6rem;
+    }
+
+    .time-picker-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .btn-picker-cancel,
+    .btn-picker-start {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .empty-state {
+        padding: 2rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    body {
+        padding: 0.25rem;
+    }
+
+    .timer-display-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .time-display {
+        font-size: 2rem;
+    }
+
+    .circular-progress-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+
+    .circular-time {
+        font-size: 1.75rem;
+    }
+
+    .circular-status {
+        font-size: 0.7rem;
+    }
+
+    .preset-timers h3 {
+        font-size: 0.9rem;
+    }
+
+    .btn-preset {
+        padding: 0.875rem;
+        font-size: 0.9rem;
+    }
+
+    .tasks-section,
+    .history-section,
+    .stats-section {
+        padding: 1rem;
+    }
+
+    .task-item,
+    .history-item {
+        padding: 0.875rem;
+    }
+
+    .time-picker-container {
+        padding: 1rem 0.75rem;
+    }
+
+    .time-picker-wheels {
+        height: 160px;
+    }
+
+    .time-wheel {
+        width: 60px;
+        height: 160px;
+    }
+
+    .time-wheel-label {
+        width: 60px;
+    }
+
+    .time-wheel-separator {
+        height: 160px;
+        line-height: 160px;
+        font-size: 1.5rem;
+    }
+
+    .time-picker-selection {
+        width: calc(60px + 0.5rem + 25px + 0.5rem + 60px);
+        height: 160px;
+    }
+
+    .wheel-item {
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    .wheel-item.selected {
+        font-size: 1.4rem;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .timer-main {
+        gap: 1rem;
+    }
+
+    .timer-display-section {
+        padding: 1.5rem;
+    }
+
+    .circular-progress-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+
+    .preset-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .btn-preset {
+        flex: 1;
+        min-width: calc(50% - 0.375rem);
+    }
+}
+
