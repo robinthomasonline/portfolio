@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mood Logger | Track Your Emotional Wellbeing</title>
+    <link rel="stylesheet" href="mood.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-title">
+            <img src="mood.png" alt="Mood Logger Icon" class="nav-icon">
+            <h1>Mood Logger</h1>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Quick Mood Entry Section -->
+        <section class="mood-entry-section">
+            <h2 class="section-title">How are you feeling?</h2>
+            <div class="mood-entry-card">
+                <div class="mood-emoji-grid">
+                    <button class="mood-btn" data-mood="😄" data-label="Happy">
+                        <span class="emoji">😄</span>
+                        <span class="label">Happy</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🤩" data-label="Excited">
+                        <span class="emoji">🤩</span>
+                        <span class="label">Excited</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😎" data-label="Confident">
+                        <span class="emoji">😎</span>
+                        <span class="label">Confident</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😌" data-label="Calm">
+                        <span class="emoji">😌</span>
+                        <span class="label">Calm</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😴" data-label="Tired">
+                        <span class="emoji">😴</span>
+                        <span class="label">Tired</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😐" data-label="Neutral">
+                        <span class="emoji">😐</span>
+                        <span class="label">Neutral</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🤔" data-label="Thoughtful">
+                        <span class="emoji">🤔</span>
+                        <span class="label">Thoughtful</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😕" data-label="Confused">
+                        <span class="emoji">😕</span>
+                        <span class="label">Confused</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😔" data-label="Sad">
+                        <span class="emoji">😔</span>
+                        <span class="label">Sad</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😢" data-label="Upset">
+                        <span class="emoji">😢</span>
+                        <span class="label">Upset</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😡" data-label="Angry">
+                        <span class="emoji">😡</span>
+                        <span class="label">Angry</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😰" data-label="Anxious">
+                        <span class="emoji">😰</span>
+                        <span class="label">Anxious</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😤" data-label="Frustrated">
+                        <span class="emoji">😤</span>
+                        <span class="label">Frustrated</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😓" data-label="Stressed">
+                        <span class="emoji">😓</span>
+                        <span class="label">Stressed</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😟" data-label="Worried">
+                        <span class="emoji">😟</span>
+                        <span class="label">Worried</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😞" data-label="Disappointed">
+                        <span class="emoji">😞</span>
+                        <span class="label">Disappointed</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😫" data-label="Overwhelmed">
+                        <span class="emoji">😫</span>
+                        <span class="label">Overwhelmed</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😑" data-label="Bored">
+                        <span class="emoji">😑</span>
+                        <span class="label">Bored</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😪" data-label="Lonely">
+                        <span class="emoji">😪</span>
+                        <span class="label">Lonely</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🤗" data-label="Grateful">
+                        <span class="emoji">🤗</span>
+                        <span class="label">Grateful</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😇" data-label="Peaceful">
+                        <span class="emoji">😇</span>
+                        <span class="label">Peaceful</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🙂" data-label="Relaxed">
+                        <span class="emoji">🙂</span>
+                        <span class="label">Relaxed</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🤞" data-label="Hopeful">
+                        <span class="emoji">🤞</span>
+                        <span class="label">Hopeful</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😃" data-label="Energetic">
+                        <span class="emoji">😃</span>
+                        <span class="label">Energetic</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😁" data-label="Motivated">
+                        <span class="emoji">😁</span>
+                        <span class="label">Motivated</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🥳" data-label="Proud">
+                        <span class="emoji">🥳</span>
+                        <span class="label">Proud</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😍" data-label="Loved">
+                        <span class="emoji">😍</span>
+                        <span class="label">Loved</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🥰" data-label="Blessed">
+                        <span class="emoji">🥰</span>
+                        <span class="label">Blessed</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🎯" data-label="Focused">
+                        <span class="emoji">🎯</span>
+                        <span class="label">Focused</span>
+                    </button>
+                    <button class="mood-btn" data-mood="💪" data-label="Productive">
+                        <span class="emoji">💪</span>
+                        <span class="label">Productive</span>
+                    </button>
+                    <button class="mood-btn" data-mood="📊" data-label="Busy">
+                        <span class="emoji">📊</span>
+                        <span class="label">Busy</span>
+                    </button>
+                    <button class="mood-btn" data-mood="✅" data-label="Accomplished">
+                        <span class="emoji">✅</span>
+                        <span class="label">Accomplished</span>
+                    </button>
+                    <button class="mood-btn" data-mood="💡" data-label="Creative">
+                        <span class="emoji">💡</span>
+                        <span class="label">Creative</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🏋️" data-label="Challenged">
+                        <span class="emoji">🏋️</span>
+                        <span class="label">Challenged</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🚫" data-label="Stuck">
+                        <span class="emoji">🚫</span>
+                        <span class="label">Stuck</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🔥" data-label="Burned Out">
+                        <span class="emoji">🔥</span>
+                        <span class="label">Burned Out</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🌟" data-label="Optimistic">
+                        <span class="emoji">🌟</span>
+                        <span class="label">Optimistic</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🚀" data-label="Determined">
+                        <span class="emoji">🚀</span>
+                        <span class="label">Determined</span>
+                    </button>
+                    <button class="mood-btn" data-mood="🤓" data-label="Curious">
+                        <span class="emoji">🤓</span>
+                        <span class="label">Curious</span>
+                    </button>
+                    <button class="mood-btn" data-mood="😊" data-label="Satisfied">
+                        <span class="emoji">😊</span>
+                        <span class="label">Satisfied</span>
+                    </button>
+                </div>
+                <div class="notes-section">
+                    <textarea 
+                        id="mood-notes" 
+                        placeholder="Add a note about why you feel this way (optional)..."
+                        rows="3"
+                    ></textarea>
+                </div>
+                <button id="save-mood-btn" class="save-btn" disabled>
+                    <i class="fas fa-save"></i> Save Mood Entry
+                </button>
+                <div id="success-message" class="success-message"></div>
+            </div>
+        </section>
+
+        <!-- Mood Suggestion Popup -->
+        <div id="mood-suggestion-overlay" class="suggestion-overlay">
+            <div id="mood-suggestion" class="mood-suggestion-popup">
+                <!-- Content will be dynamically inserted -->
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Mood Insights</h2>
+                <div class="chart-controls">
+                    <button class="filter-btn active" data-period="7">Last 7 Days</button>
+                    <button class="filter-btn" data-period="30">Last 30 Days</button>
+                    <button class="filter-btn" data-period="90">Last 90 Days</button>
+                    <button class="filter-btn" data-period="all">All Time</button>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Mood Trend Over Time</h3>
+                    <canvas id="trend-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Average Mood by Day</h3>
+                    <canvas id="daily-avg-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Mood Frequency</h3>
+                    <canvas id="frequency-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Monthly Overview</h3>
+                    <canvas id="monthly-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Entries Section -->
+        <section class="entries-section">
+            <div class="section-header">
+                <h2 class="section-title">Recent Entries</h2>
+                <button id="export-btn" class="export-btn">
+                    <i class="fas fa-download"></i> Export to CSV
+                </button>
+            </div>
+            <div id="entries-list" class="entries-list">
+                <!-- Entries will be dynamically inserted here -->
+            </div>
+            <div id="empty-state" class="empty-state">
+                <i class="fas fa-heart"></i>
+                <p>No mood entries yet. Start tracking your emotions!</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="mood.js"></script>
+</body>
+</html>
+

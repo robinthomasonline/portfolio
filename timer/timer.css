@@ -553,29 +553,153 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Task Name Modal */
+.task-name-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-name-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.task-name-container {
+    position: relative;
+    background: var(--panel-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 0;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    z-index: 10001;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.task-name-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--card-border);
+}
+
+.task-name-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 1.2rem;
+}
+
+.task-name-close {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.task-name-close:hover {
+    color: var(--primary-color);
+}
+
+.task-name-body {
+    margin-bottom: 2rem;
+}
+
+.task-name-input {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border-color);
+    border-radius: 0;
+    color: #ffffff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.task-name-input:focus {
+    border-color: var(--primary-color);
+}
+
+.task-name-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-task-cancel,
+.btn-task-start {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary-color);
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-task-cancel:hover,
+.btn-task-start:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-task-start {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .timer-controls {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 1.5rem 0;
 }
 
 .btn-timer {
-    padding: 1rem 2rem;
+    padding: 0.75rem 1.5rem;
     border: 2px solid var(--primary-color);
     border-radius: 0;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    min-width: 140px;
-    min-height: 44px;
     justify-content: center;
+    gap: 0;
+    min-width: 60px;
+    min-height: 44px;
     font-family: 'Share Tech Mono', monospace;
-    text-transform: uppercase;
     letter-spacing: 0.1em;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
     touch-action: manipulation;
@@ -1251,6 +1375,33 @@ body {
 
     .stat-label {
         font-size: 0.8rem;
+    }
+
+    .timer-controls {
+        flex-direction: row;
+        gap: 0.75rem;
+        flex-wrap: nowrap;
+    }
+
+    .btn-timer {
+        flex: 1;
+        padding: 0.75rem;
+        font-size: 1rem;
+        min-width: 50px;
+    }
+
+    .task-name-container {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .task-name-actions {
+        flex-direction: column;
+    }
+
+    .btn-task-cancel,
+    .btn-task-start {
+        width: 100%;
     }
 
     .preset-buttons {

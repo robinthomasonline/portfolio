@@ -908,6 +908,10 @@ body {
     border-radius: 15px;
     overflow: hidden;
     padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
 }
 
 .project-card:hover {
@@ -990,14 +994,33 @@ body {
 
     .projects-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .project-card {
+        padding: 1rem;
     }
 
     .project-content {
-        padding: 1.5rem;
+        padding: 1rem;
     }
 
     .project-header h3 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
+    }
+
+    .project-description {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .project-tech {
+        gap: 0.3rem;
+    }
+
+    .tech-tag {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.8rem;
     }
 }
 

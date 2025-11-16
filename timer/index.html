@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Work Timer">
+    <link rel="apple-touch-icon" href="stopwatch.png">
     <title>Work Timer | Track Your Tasks</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="timer.css">
@@ -40,6 +41,20 @@
                     <div class="time-display" id="timeDisplay">00:00:00</div>
                     <div class="current-task" id="currentTask">No active task</div>
                 </div>
+                
+                <!-- Timer Controls -->
+                <div class="timer-controls">
+                    <button class="btn-timer btn-start" id="startBtn" title="Start">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="btn-timer btn-pause" id="pauseBtn" disabled title="Pause">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="btn-timer btn-stop" id="stopBtn" disabled title="Stop">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+                
                 <div class="preset-timers">
                     <h3>Quick Start</h3>
                     <div class="preset-buttons">
@@ -93,16 +108,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="timer-controls">
-                    <button class="btn-timer btn-start" id="startBtn">
-                        <i class="fas fa-play"></i> Start
-                    </button>
-                    <button class="btn-timer btn-pause" id="pauseBtn" disabled>
-                        <i class="fas fa-pause"></i> Pause
-                    </button>
-                    <button class="btn-timer btn-stop" id="stopBtn" disabled>
-                        <i class="fas fa-stop"></i> Stop
-                    </button>
+                <!-- Task Name Popup Modal -->
+                <div class="task-name-modal" id="taskNameModal">
+                    <div class="task-name-overlay" onclick="timer.closeTaskNameModal()"></div>
+                    <div class="task-name-container">
+                        <div class="task-name-header">
+                            <h3>Enter Task Name</h3>
+                            <button class="task-name-close" onclick="timer.closeTaskNameModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="task-name-body">
+                            <input type="text" id="taskNameInput" placeholder="Enter task name..." class="task-name-input" autofocus>
+                        </div>
+                        <div class="task-name-actions">
+                            <button class="btn-task-cancel" onclick="timer.closeTaskNameModal()">Cancel</button>
+                            <button class="btn-task-start" onclick="timer.confirmTaskAndStart()">Start Timer</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

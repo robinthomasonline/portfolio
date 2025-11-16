@@ -27,6 +27,8 @@ class WorkTimer {
         this.taskInput = document.getElementById('taskInput');
         this.addTaskBtn = document.getElementById('addTaskBtn');
         this.activeTasksList = document.getElementById('activeTasksList');
+        this.taskNameModal = document.getElementById('taskNameModal');
+        this.taskNameInput = document.getElementById('taskNameInput');
         this.historyList = document.getElementById('historyList');
         this.clearHistoryBtn = document.getElementById('clearHistoryBtn');
         this.exportHistoryBtn = document.getElementById('exportHistoryBtn');
@@ -59,6 +61,11 @@ class WorkTimer {
         this.taskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addTask();
         });
+        if (this.taskNameInput) {
+            this.taskNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.confirmTaskAndStart();
+            });
+        }
         this.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
         this.exportHistoryBtn.addEventListener('click', () => this.exportToCSV());
     }
@@ -149,7 +156,7 @@ class WorkTimer {
 
         // Regular task timer
         if (!this.currentTask) {
-            alert('Please select or create a task first!');
+            this.showTaskNameModal();
             return;
         }
 
@@ -410,6 +417,76 @@ class WorkTimer {
         this.renderTasks();
     }
 
+    showTaskNameModal() {
+        if (this.taskNameModal) {
+            this.taskNameModal.style.display = 'flex';
+            if (this.taskNameInput) {
+                this.taskNameInput.value = '';
+                setTimeout(() => this.taskNameInput.focus(), 100);
+            }
+        }
+    }
+
+    closeTaskNameModal() {
+        if (this.taskNameModal) {
+            this.taskNameModal.style.display = 'none';
+            if (this.taskNameInput) {
+                this.taskNameInput.value = '';
+            }
+        }
+    }
+
+    confirmTaskAndStart() {
+        const taskName = this.taskNameInput ? this.taskNameInput.value.trim() : '';
+        if (!taskName) {
+            if (this.taskNameInput) {
+                this.taskNameInput.focus();
+            }
+            return;
+        }
+
+        // Create task if it doesn't exist
+        let task = this.tasks.find(t => t.name.toLowerCase() === taskName.toLowerCase());
+        if (!task) {
+            task = {
+                id: Date.now().toString(),
+                name: taskName,
+                totalTime: 0,
+                isRunning: false,
+                createdAt: new Date().toISOString()
+            };
+            this.tasks.push(task);
+            this.saveTasks();
+            this.renderTasks();
+        }
+
+        // Select the task
+        this.currentTask = task.id;
+        this.elapsedTime = 0;
+        if (this.currentTaskDisplay) {
+            this.currentTaskDisplay.textContent = task.name;
+        }
+        if (this.timeDisplay) {
+            this.timeDisplay.textContent = '00:00:00';
+        }
+
+        // Close modal
+        this.closeTaskNameModal();
+
+        // Start the timer
+        this.startTime = Date.now();
+        this.timer = setInterval(() => this.updateDisplay(), 100);
+        
+        if (this.startBtn) this.startBtn.disabled = true;
+        if (this.pauseBtn) this.pauseBtn.disabled = false;
+        if (this.stopBtn) this.stopBtn.disabled = false;
+
+        // Update task status
+        task.isRunning = true;
+        this.saveTasks();
+        this.renderTasks();
+    }
+
     selectTask(taskId) {
         // Stop current timer if running
         if (this.timer) {
@@ -644,11 +721,28 @@ class WorkTimer {
             return;
         }
 
+        // Get current export date
+        const exportDate = new Date();
+        const exportDateString = exportDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        const exportTimeString = exportDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        const exportDateTime = `${exportDateString} ${exportTimeString}`;
+
         // CSV Headers
         const headers = ['Task Name', 'Date', 'Time', 'Duration (seconds)', 'Duration (formatted)'];
         
         // Convert history to CSV rows
         const csvRows = [
+            `"Export Date: ${exportDateTime}"`,
+            '',
             headers.join(','),
             ...this.history.map(item => {
                 const date = new Date(item.date);
@@ -885,7 +979,7 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         // Use relative path for service worker
         const swPath = './sw.js';
-        navigator.serviceWorker.register(swPath)
+        navigator.serviceWorker.register(swPath, { scope: './' })
             .then((registration) => {
                 console.log('ServiceWorker registration successful:', registration.scope);
                 // Check for updates
@@ -896,6 +990,64 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
+
+// Handle PWA install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    // Show custom install button or notification
+    console.log('PWA install prompt available');
+    // You can show a custom install button here
+    showInstallButton();
+});
+
+// Show install button when PWA can be installed
+function showInstallButton() {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        return; // Already installed
+    }
+    
+    // Create or show install button
+    let installBtn = document.getElementById('installBtn');
+    if (!installBtn) {
+        installBtn = document.createElement('button');
+        installBtn.id = 'installBtn';
+        installBtn.className = 'btn-install-pwa';
+        installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+        installBtn.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; background: linear-gradient(45deg, #4A90E2, #50E3C2); color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000;';
+        document.body.appendChild(installBtn);
+        
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                // Clear the deferredPrompt
+                deferredPrompt = null;
+                // Hide the install button
+                installBtn.style.display = 'none';
+            }
+        });
+    } else {
+        installBtn.style.display = 'block';
+    }
+}
+
+// Hide install button after installation
+window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) {
+        installBtn.style.display = 'none';
+    }
+    deferredPrompt = null;
+});
 
 // Initialize timer when page loads
 let timer;

@@ -5,7 +5,8 @@ const urlsToCache = [
   './timer.css',
   './timer.js',
   './beep.mp3',
-  './manifest.json'
+  './manifest.json',
+  './stopwatch.png'
 ];
 
 // Install event - cache resources
