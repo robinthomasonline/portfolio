@@ -1,0 +1,74 @@
+# llms.txt - Information for AI/LLM Crawlers
+# This file provides context about the website for AI language models
+
+# Site Information
+Site: https://robinthomasonline.github.io
+Owner: Robin Thomas
+Type: Personal Portfolio & Web Applications Showcase
+Language: English
+
+# About
+Robin Thomas is an IT & Cybersecurity Consultant, DevOps & Cloud Specialist, and GRC & Compliance Expert with 9+ years of experience. 
+Specializes in infrastructure, network security, cloud solutions, and compliance (PCI DSS, ISO 27001).
+Founder of Opsbin (IT Support Services) and Bitstrail (Software Development Company).
+
+# Main Sections
+- Home: https://robinthomasonline.github.io/
+- About: Professional background and story
+- Expertise: IT Security, DevOps, Cloud, GRC, Project Management, Web & Mobile Development
+- Experience: Career timeline and work history
+- Startups: Opsbin and Bitstrail business information
+- Projects: Portfolio of web applications and tools
+- Contact: Contact information and social media links
+
+# Web Applications
+The site hosts several free web applications:
+
+1. Work Timer - Productivity timer for tracking work sessions
+   URL: https://robinthomasonline.github.io/apps/timer/
+
+2. Mood Logger - Track emotional wellbeing and mood patterns
+   URL: https://robinthomasonline.github.io/apps/mood/
+
+3. Password Generator - Generate secure, compliant passwords
+   URL: https://robinthomasonline.github.io/apps/password/
+
+4. Subnet Calculator - Network engineering tool for subnet calculations
+   URL: https://robinthomasonline.github.io/apps/subnet/
+
+5. IP Address Locator - IP geolocation and network information tool
+   URL: https://robinthomasonline.github.io/apps/ip/
+
+6. Kanban Board - Drag-and-drop task management board
+   URL: https://robinthomasonline.github.io/apps/kanban/
+
+7. Kerala Lottery Draw Machine - Lottery simulator
+   URL: https://robinthomasonline.github.io/apps/keralalottery/
+
+# External Projects
+- Smart HOMI: https://smarthomi.app
+- Bookingtrails: https://bookingtrails.com
+
+# Contact Information
+Email: robinthomasonline@gmail.com
+Phone (Australia): +61423453240
+Phone (India): +919746995385
+LinkedIn: https://linkedin.com/in/robinthomasonline
+WhatsApp: Available via contact page
+
+# Business Ventures
+- Opsbin: https://opsbin.com (IT Support Services)
+- Bitstrail: https://bitstrail.com (Software Development)
+
+# Usage Guidelines
+- All web applications are free to use
+- Content is for informational and portfolio purposes
+- Applications demonstrate technical skills and capabilities
+- Please respect copyright and intellectual property
+
+# Technical Stack
+Technologies used: HTML, CSS, JavaScript, React, Node.js, TypeScript, AWS, Azure, GCP, Docker, Kubernetes, and more.
+
+# Last Updated
+2025
+

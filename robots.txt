@@ -1,0 +1,36 @@
+# robots.txt for robinthomasonline.github.io
+
+# Allow all search engines to crawl the entire site
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://robinthomasonline.github.io/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1
+
+# Disallow specific paths if needed (currently none)
+# Disallow: /private/
+# Disallow: /admin/
+
+# Allow all apps
+Allow: /apps/
+Allow: /apps/ip/
+Allow: /apps/subnet/
+Allow: /apps/timer/
+Allow: /apps/kanban/
+Allow: /apps/password/
+Allow: /apps/mood/
+Allow: /apps/keralalottery/
+
+# Allow static assets
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+
