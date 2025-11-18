@@ -51,6 +51,9 @@ The site hosts several free web applications:
 9. Co-Founder Pie - Calculate fair equity distribution for startup co-founders
    URL: https://robinthomasonline.github.io/apps/cofounder-pie/
 
+10. Daybook - Track income and expenses for small shops with invoice generation
+    URL: https://robinthomasonline.github.io/apps/daybook/
+
 # External Projects
 - Smart HOMI: https://smarthomi.app
 - Bookingtrails: https://bookingtrails.com

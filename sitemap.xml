@@ -92,5 +92,13 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Daybook App -->
+  <url>
+    <loc>https://robinthomasonline.github.io/apps/daybook/</loc>
+    <lastmod>2025-11-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
 

@@ -7,7 +7,6 @@ const texts = [
     "IT Specialist",
     "Business Consultant",
     "Security Specialist",
-    "Software Developer",
     "Network Administrator",
     "System Administrator",
     "Cloud Engineer"

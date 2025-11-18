@@ -25,6 +25,7 @@ Allow: /apps/mood/
 Allow: /apps/keralalottery/
 Allow: /apps/cofounder-pie/
 Allow: /apps/resume-cover/
+Allow: /apps/daybook/
 
 # Allow static assets
 Allow: /*.css$

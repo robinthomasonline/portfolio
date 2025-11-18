@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Daybook for Small Shops - Track income and expenses with multiple items per entry. Generate invoices and export data. Perfect for small business bookkeeping.">
+    <meta name="keywords" content="daybook, income tracker, expense tracker, small business, bookkeeping, invoice generator, shop management, accounting">
+    <meta name="author" content="Robin Thomas">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://robinthomasonline.github.io/apps/daybook/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://robinthomasonline.github.io/apps/daybook/">
+    <meta property="og:title" content="Daybook | Income & Expense Tracker for Small Shops">
+    <meta property="og:description" content="Track income and expenses with multiple items per entry. Generate invoices and export data. Perfect for small business bookkeeping.">
+    <meta property="og:site_name" content="Robin Thomas - Projects">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://robinthomasonline.github.io/apps/daybook/">
+    <meta name="twitter:title" content="Daybook | Income & Expense Tracker for Small Shops">
+    <meta name="twitter:description" content="Track income and expenses with multiple items per entry. Generate invoices and export data.">
+    
+    <title>Daybook | Income & Expense Tracker | Robin Thomas</title>
+    <link rel="stylesheet" href="daybook.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-book"></i> Daybook</h1>
+            <p class="subtitle">Track income and expenses for your small shop</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-income" id="addIncomeBtn">
+                <i class="fas fa-plus-circle"></i> Add Income
+            </button>
+            <button class="btn btn-expense" id="addExpenseBtn">
+                <i class="fas fa-minus-circle"></i> Add Expense
+            </button>
+            <div class="export-dropdown">
+                <button class="btn btn-secondary" id="exportBtn">
+                    <i class="fas fa-download"></i> Export
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="exportDropdown">
+                    <a href="#" class="dropdown-item" data-format="csv">
+                        <i class="fas fa-file-csv"></i> Export as CSV
+                    </a>
+                    <a href="#" class="dropdown-item" data-format="json">
+                        <i class="fas fa-file-code"></i> Export as JSON
+                    </a>
+                </div>
+            </div>
+            <button class="btn btn-secondary" id="settingsBtn">
+                <i class="fas fa-cog"></i> Shop Settings
+            </button>
+        </div>
+
+        <div class="summary-cards">
+            <div class="summary-card income-card">
+                <div class="summary-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Total Income</h3>
+                    <p class="summary-amount" id="totalIncome">₹0.00</p>
+                </div>
+            </div>
+            <div class="summary-card expense-card">
+                <div class="summary-icon">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Total Expense</h3>
+                    <p class="summary-amount" id="totalExpense">₹0.00</p>
+                </div>
+            </div>
+            <div class="summary-card balance-card">
+                <div class="summary-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Net Balance</h3>
+                    <p class="summary-amount" id="netBalance">₹0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="entries-section">
+            <div class="section-header">
+                <h2>Entries</h2>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="income">Income</button>
+                    <button class="filter-btn" data-filter="expense">Expense</button>
+                </div>
+            </div>
+            <div class="entries-table-container">
+                <table class="entries-table" id="entriesTable">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entriesTableBody">
+                        <!-- Entries will be dynamically added here -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No entries yet. Start by adding an income or expense entry.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Modal -->
+    <div class="modal" id="incomeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-arrow-up"></i> Add Income Entry</h2>
+                <button class="modal-close" id="closeIncomeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="incomeDate">
+                            <i class="fas fa-calendar"></i> Date
+                        </label>
+                        <input type="date" id="incomeDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="incomeTime">
+                            <i class="fas fa-clock"></i> Time
+                        </label>
+                        <input type="time" id="incomeTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="incomeCustomerName">
+                        <i class="fas fa-user"></i> Customer Name (Optional)
+                    </label>
+                    <input type="text" id="incomeCustomerName" placeholder="Enter customer name">
+                </div>
+                <div class="form-group">
+                    <label for="incomeDescription">
+                        <i class="fas fa-align-left"></i> Description (Optional)
+                    </label>
+                    <input type="text" id="incomeDescription" placeholder="e.g., Sale to customer">
+                </div>
+                <div class="form-group">
+                    <label for="incomeAmount">
+                        <i class="fas fa-rupee-sign"></i> Amount
+                    </label>
+                    <input type="number" id="incomeAmount" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="cancelIncomeBtn">Cancel</button>
+                <button class="btn btn-save" id="saveIncomeBtn">Save Income</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Modal -->
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-arrow-down"></i> Add Expense Entry</h2>
+                <button class="modal-close" id="closeExpenseModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="expenseDate">
+                        <i class="fas fa-calendar"></i> Date
+                    </label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="expenseTime">
+                        <i class="fas fa-clock"></i> Time
+                    </label>
+                    <input type="time" id="expenseTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="expenseDescription">
+                        <i class="fas fa-align-left"></i> Description
+                    </label>
+                    <input type="text" id="expenseDescription" placeholder="e.g., Office supplies" required>
+                </div>
+                <div class="form-group">
+                    <label for="expenseAmount">
+                        <i class="fas fa-rupee-sign"></i> Amount
+                    </label>
+                    <input type="number" id="expenseAmount" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="cancelExpenseBtn">Cancel</button>
+                <button class="btn btn-save" id="saveExpenseBtn">Save Expense</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Shop Settings</h2>
+                <button class="modal-close" id="closeSettingsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="shopName">
+                        <i class="fas fa-store"></i> Shop Name
+                    </label>
+                    <input type="text" id="shopName" placeholder="Enter shop name">
+                </div>
+                <div class="form-group">
+                    <label for="shopAddress">
+                        <i class="fas fa-map-marker-alt"></i> Address
+                    </label>
+                    <textarea id="shopAddress" rows="3" placeholder="Enter shop address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="shopEmail">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input type="email" id="shopEmail" placeholder="shop@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="shopPhone">
+                        <i class="fas fa-phone"></i> Phone
+                    </label>
+                    <input type="tel" id="shopPhone" placeholder="+91 1234567890">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="cancelSettingsBtn">Cancel</button>
+                <button class="btn btn-save" id="saveSettingsBtn">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div class="modal" id="invoiceModal">
+        <div class="modal-content invoice-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-invoice"></i> Invoice</h2>
+                <div class="invoice-actions">
+                    <button class="btn btn-small" id="printInvoiceBtn">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="modal-close" id="closeInvoiceModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body" id="invoiceBody">
+                <!-- Invoice content will be dynamically generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Entry saved successfully!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>❤️ Developed By <a href="https://robinthomasonline.github.io/" target="_blank" rel="noopener noreferrer">Robin Thomas</a></p>
+    </footer>
+
+    <script src="daybook.js"></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Daybook",
+        "description": "Track income and expenses with multiple items per entry. Generate invoices and export data. Perfect for small business bookkeeping.",
+        "url": "https://robinthomasonline.github.io/apps/daybook/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Robin Thomas",
+            "url": "https://robinthomasonline.github.io"
+        },
+        "featureList": [
+            "Income and expense tracking",
+            "Multiple items per income entry",
+            "Invoice generation",
+            "Data export (CSV/JSON)",
+            "Shop settings management",
+            "Local storage persistence"
+        ]
+    }
+    </script>
+</body>
+</html>
+
