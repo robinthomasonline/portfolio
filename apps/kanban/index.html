@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Kanban Board - A minimalist drag-and-drop task management tool with CSV export/import, priority levels, and user assignment. Organize your tasks in To Do, In Progress, and Done columns.">
+    <meta name="keywords" content="kanban board, task management, drag and drop, project management, todo list, task tracker, kanban tool, free kanban, task organizer, productivity tool">
+    <meta name="author" content="Robin Thomas">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://robinthomasonline.github.io/apps/kanban/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://robinthomasonline.github.io/apps/kanban/">
+    <meta property="og:title" content="Kanban Board | Free Task Management Tool">
+    <meta property="og:description" content="A minimalist drag-and-drop task management board with CSV export/import, priority levels, and user assignment. Organize your workflow efficiently.">
+    <meta property="og:site_name" content="Robin Thomas - Projects">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://robinthomasonline.github.io/apps/kanban/">
+    <meta name="twitter:title" content="Kanban Board | Free Task Management Tool">
+    <meta name="twitter:description" content="A minimalist drag-and-drop task management board with CSV export/import, priority levels, and user assignment.">
+    
+    <title>Kanban Board | Free Task Management Tool | Robin Thomas</title>
+    <link rel="stylesheet" href="kanban.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-tasks"></i> Kanban Board</h1>
+            <p class="subtitle">Drag and drop tasks between columns. Your progress is saved automatically.</p>
+        </div>
+
+        <div class="board-controls">
+            <button class="btn-add-task" id="addTaskBtn">
+                <i class="fas fa-plus"></i> Add Task
+            </button>
+            <button class="btn-export" id="exportBtn">
+                <i class="fas fa-download"></i> Export CSV
+            </button>
+            <button class="btn-import" id="importBtn">
+                <i class="fas fa-upload"></i> Import CSV
+            </button>
+            <input type="file" id="importFileInput" accept=".csv" style="display: none;">
+        </div>
+
+        <div class="kanban-board" id="kanbanBoard">
+            <!-- To Do Column -->
+            <div class="column" data-status="todo">
+                <div class="column-header">
+                    <h2><i class="fas fa-list"></i> To Do</h2>
+                    <span class="task-count" id="todoCount">0</span>
+                </div>
+                <div class="task-list" id="todoList" data-status="todo">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="column" data-status="inprogress">
+                <div class="column-header">
+                    <h2><i class="fas fa-spinner"></i> In Progress</h2>
+                    <span class="task-count" id="inprogressCount">0</span>
+                </div>
+                <div class="task-list" id="inprogressList" data-status="inprogress">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="column" data-status="done">
+                <div class="column-header">
+                    <h2><i class="fas fa-check-circle"></i> Done</h2>
+                    <span class="task-count" id="doneCount">0</span>
+                </div>
+                <div class="task-list" id="doneList" data-status="done">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Task</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="taskTitle">
+                        <i class="fas fa-heading"></i> Task Title
+                    </label>
+                    <input 
+                        type="text" 
+                        id="taskTitle" 
+                        placeholder="Enter task title..."
+                        maxlength="100"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">
+                        <i class="fas fa-align-left"></i> Description (Optional)
+                    </label>
+                    <textarea 
+                        id="taskDescription" 
+                        placeholder="Enter task description..."
+                        rows="4"
+                        maxlength="500"
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskPriority">
+                        <i class="fas fa-flag"></i> Priority
+                    </label>
+                    <select id="taskPriority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskUser">
+                        <i class="fas fa-user"></i> Assigned To (Optional)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="taskUser" 
+                        placeholder="Enter person name..."
+                        maxlength="50"
+                    >
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-save" id="saveTaskBtn">Save Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Task saved successfully!</span>
+    </div>
+
+    <script src="kanban.js"></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Kanban Board",
+        "description": "A minimalist drag-and-drop task management board with CSV export/import, priority levels, and user assignment",
+        "url": "https://robinthomasonline.github.io/apps/kanban/",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Robin Thomas",
+            "url": "https://robinthomasonline.github.io"
+        },
+        "featureList": [
+            "Drag-and-drop task management",
+            "Three-column workflow (To Do, In Progress, Done)",
+            "Priority levels and user assignment",
+            "CSV export and import",
+            "Local storage persistence"
+        ]
+    }
+    </script>
+</body>
+</html>
+

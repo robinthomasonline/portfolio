@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Showcase | Robin Thomas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --background-color: #000000;
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .project-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .project-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            line-height: 1.7;
+        }
+
+        .project-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .project-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: auto;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            gap: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .project-link i {
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-link i {
+            transform: translateX(5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .project-card {
+                padding: 1.5rem;
+            }
+
+            .project-title {
+                font-size: 1.5rem;
+            }
+
+            .project-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+                padding-top: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .project-card {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card {
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .project-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .project-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .project-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .project-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .project-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .project-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+
+        <div class="header">
+            <h1>Projects Showcase</h1>
+            <p>Explore my collection of web applications and tools</p>
+        </div>
+
+        <div class="projects-grid">
+            <a href="mood/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h2 class="project-title">Mood Logger</h2>
+                <p class="project-description">
+                    Track your emotional wellbeing with a comprehensive mood logging application. 
+                    Visualize your mood trends over time and gain insights into your emotional patterns.
+                </p>
+                <ul class="project-features">
+                    <li>Emoji-based mood tracking</li>
+                    <li>Interactive charts and analytics</li>
+                    <li>Note-taking for each entry</li>
+                    <li>Export data to CSV</li>
+                    <li>Mobile-friendly design</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="password/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h2 class="project-title">Password Generator</h2>
+                <p class="project-description">
+                    Generate secure, compliant passwords with customizable settings. 
+                    Includes presets for ISO, PCI, CSA, HIPAA, NIST, and GDPR compliance standards.
+                </p>
+                <ul class="project-features">
+                    <li>Customizable password length</li>
+                    <li>Character type selection</li>
+                    <li>Compliance presets</li>
+                    <li>One-click copy to clipboard</li>
+                    <li>Security best practices</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="timer/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-stopwatch"></i>
+                </div>
+                <h2 class="project-title">Work Timer</h2>
+                <p class="project-description">
+                    A retro-style timer application for tracking work sessions and tasks. 
+                    Manage multiple tasks, view statistics, and export your work history.
+                </p>
+                <ul class="project-features">
+                    <li>Stopwatch and countdown modes</li>
+                    <li>Task management</li>
+                    <li>Quick preset timers</li>
+                    <li>Daily statistics</li>
+                    <li>CSV export functionality</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="ip/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h2 class="project-title">IP Address Locator</h2>
+                <p class="project-description">
+                    Get comprehensive geographical and network information for any IP address. 
+                    Displays all details from IPAPI including location, network, country, and timezone data.
+                </p>
+                <ul class="project-features">
+                    <li>Real-time IP geolocation</li>
+                    <li>Complete IPAPI data display</li>
+                    <li>Interactive location map</li>
+                    <li>Network and ISP information</li>
+                    <li>Country and timezone details</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="subnet/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h2 class="project-title">Subnet Calculator</h2>
+                <p class="project-description">
+                    Calculate subnet mask, network address, broadcast address, and host range from IP/CIDR notation. 
+                    Demonstrates network engineering and security math with binary representation visualization.
+                </p>
+                <ul class="project-features">
+                    <li>IP/CIDR notation support</li>
+                    <li>Subnet mask calculation</li>
+                    <li>Network and broadcast addresses</li>
+                    <li>Host range calculation</li>
+                    <li>Binary representation visualization</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="kanban/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h2 class="project-title">Kanban Board</h2>
+                <p class="project-description">
+                    A minimalist drag-and-drop task management board with three columns (To Do, In Progress, Done). 
+                    Features local storage persistence, task editing, priority levels, CSV export/import, and user assignment.
+                </p>
+                <ul class="project-features">
+                    <li>Drag-and-drop task management</li>
+                    <li>Three-column workflow</li>
+                    <li>Priority levels and user assignment</li>
+                    <li>CSV export and import</li>
+                    <li>Local storage persistence</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+
