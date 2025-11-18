@@ -1640,3 +1640,30 @@ body {
     }
 }
 
+/* Footer */
+.app-footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.app-footer p {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 0.875rem;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.app-footer a {
+    color: var(--panel-dark);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.app-footer a:hover {
+    color: #4A90E2;
+    text-decoration: underline;
+}
+

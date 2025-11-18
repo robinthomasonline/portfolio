@@ -277,6 +277,48 @@
         .project-card:nth-child(6) {
             animation-delay: 0.6s;
         }
+
+        .project-card:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .project-card:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .app-footer p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+
+        .app-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .app-footer a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .app-footer .footer-link {
+            color: var(--secondary-color);
+        }
+
+        .app-footer .footer-link:hover {
+            color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -287,7 +329,7 @@
         </a>
 
         <div class="header">
-            <h1>Projects Showcase</h1>
+            <h1>Projects</h1>
             <p>Explore my collection of web applications and tools</p>
         </div>
 
@@ -423,8 +465,61 @@
                     <i class="fas fa-arrow-right"></i>
                 </div>
             </a>
+
+            <a href="resume-cover/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h2 class="project-title">Resume & Cover Letter Generator</h2>
+                <p class="project-description">
+                    AI-powered ATS-friendly resume and cover letter generator optimized for international job markets. 
+                    Uses Gemini AI to create keyword-rich, tailored documents that pass ATS screening.
+                </p>
+                <ul class="project-features">
+                    <li>AI-powered resume generation</li>
+                    <li>ATS-optimized formatting</li>
+                    <li>Keyword extraction from job descriptions</li>
+                    <li>International standards support</li>
+                    <li>PDF export functionality</li>
+                    <li>Editable generated content</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="cofounder-pie/" class="project-card">
+                <div class="project-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h2 class="project-title">Co-Founder Pie</h2>
+                <p class="project-description">
+                    Calculate fair equity distribution for startup co-founders based on contributions, tasks, and responsibilities. 
+                    Supports 2-10 founders with weighted task scoring and automatic percentage calculations.
+                </p>
+                <ul class="project-features">
+                    <li>Equity distribution calculator</li>
+                    <li>Support for 2-10 founders</li>
+                    <li>Weighted task scoring</li>
+                    <li>Automatic percentage calculations</li>
+                    <li>Local storage persistence</li>
+                    <li>Multiple startup management</li>
+                    <li>Export/Import functionality</li>
+                </ul>
+                <div class="project-link">
+                    <span>View Project</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>❤️ Developed By <a href="https://robinthomasonline.github.io/" target="_blank" rel="noopener noreferrer">Robin Thomas</a></p>
+        <p>Request Feature or report bug to <a href="mailto:robinthomasonline@gmail.com" class="footer-link">email</a>.</p>
+    </footer>
 </body>
 </html>
 

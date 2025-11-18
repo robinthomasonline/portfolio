@@ -7,7 +7,7 @@
   <!-- Main Homepage -->
   <url>
     <loc>https://robinthomasonline.github.io/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -15,7 +15,7 @@
   <!-- Apps Index Page -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -23,7 +23,7 @@
   <!-- Work Timer App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/timer/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -31,7 +31,7 @@
   <!-- Mood Logger App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/mood/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -39,7 +39,7 @@
   <!-- Password Generator App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/password/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -47,7 +47,7 @@
   <!-- Subnet Calculator App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/subnet/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -55,7 +55,7 @@
   <!-- IP Address Locator App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/ip/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -63,7 +63,7 @@
   <!-- Kanban Board App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/kanban/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -71,7 +71,23 @@
   <!-- Kerala Lottery Draw Machine App -->
   <url>
     <loc>https://robinthomasonline.github.io/apps/keralalottery/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-11-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Resume & Cover Letter Generator App -->
+  <url>
+    <loc>https://robinthomasonline.github.io/apps/resume-cover/</loc>
+    <lastmod>2025-11-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Co-Founder Pie App -->
+  <url>
+    <loc>https://robinthomasonline.github.io/apps/cofounder-pie/</loc>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

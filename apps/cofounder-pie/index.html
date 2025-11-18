@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Co-Founder Pie - Calculate fair equity distribution for startup co-founders based on contributions, tasks, and responsibilities. Supports 2-10 founders with weighted task scoring and automatic percentage calculations.">
+    <meta name="keywords" content="co-founder equity, equity calculator, startup equity, founder equity distribution, equity split calculator, startup calculator, co-founder pie, equity distribution tool">
+    <meta name="author" content="Robin Thomas">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://robinthomasonline.github.io/apps/cofounder-pie/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://robinthomasonline.github.io/apps/cofounder-pie/">
+    <meta property="og:title" content="Co-Founder Pie - Equity Distribution Calculator">
+    <meta property="og:description" content="Calculate fair equity distribution for startup co-founders based on contributions, tasks, and responsibilities. Supports 2-10 founders with weighted task scoring.">
+    <meta property="og:site_name" content="Robin Thomas - Portfolio">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://robinthomasonline.github.io/apps/cofounder-pie/">
+    <meta name="twitter:title" content="Co-Founder Pie - Equity Distribution Calculator">
+    <meta name="twitter:description" content="Calculate fair equity distribution for startup co-founders based on contributions, tasks, and responsibilities. Supports 2-10 founders with weighted task scoring.">
+    
+    <title>Co-Founder Pie - Equity Distribution Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .startup-name-section {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .startup-name-input {
+            padding: 10px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            min-width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .startup-name-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .startup-name-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .results-bar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .founder-result {
+            text-align: center;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }
+
+        .founder-result h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .founder-result .percentage {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .total-percentage {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+
+
+        .task-name {
+            text-align: left;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .weight-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .contribution-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .contribution-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .score-0 { background-color: #ff6b6b; color: white; }
+        .score-1, .score-2, .score-3, .score-4, .score-5, .score-6 { background-color: #feca57; }
+        .score-7, .score-8 { background-color: #48dbfb; }
+        .score-9, .score-10 { background-color: #1dd1a1; color: white; }
+
+        .total-cell {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .founder-management, .task-management, .export-controls {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .founder-management h4, .task-management h4, .export-controls h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .founder-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .export-controls .btn, .startup-management .btn {
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .startup-management {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .startup-management h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .task-options label {
+            font-size: 0.9em;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .founder-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .founder-input-group .founder-input {
+            flex: 1;
+            margin: 0;
+        }
+
+        .founder-remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .founder-remove-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .founder-remove-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .save-status {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f8f9fa;
+            border-left: 4px solid #27ae60;
+        }
+
+        .save-indicator {
+            font-size: 0.9em;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .save-indicator.unsaved {
+            color: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+
+        .save-indicator.saving {
+            color: #f39c12;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .btn-info.unsaved {
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-info.unsaved:hover {
+            background: #c0392b;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .section-header {
+            background: #ecf0f1;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .section-header td {
+            background: #ecf0f1;
+            padding: 0 !important;
+        }
+
+        .section-header-content {
+            flex: 0 0 auto;
+            font-size: 1.1em;
+            text-align: left;
+        }
+
+        .section-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-add-task-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .section-add-task-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .section-delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .section-delete-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .section-delete-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .task-name {
+            text-align: left;
+            font-weight: 500;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .task-name-content {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn:disabled:hover {
+            background: inherit;
+            transform: none !important;
+        }
+
+        .founder-input {
+            padding: 8px 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            margin: 0 5px;
+            font-weight: 500;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .app-footer p {
+            color: #7f8c8d;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .app-footer a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .app-footer a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .results-bar {
+                flex-direction: column;
+            }
+            
+            .founder-result {
+                min-width: 120px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .founder-management, .task-management, .export-controls {
+                min-width: auto;
+            }
+
+            .founder-controls {
+                flex-direction: column;
+            }
+
+            .founder-input-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="startup-title">Co Founder Pie</h1>
+            <p>Calculate fair equity distribution based on contributions</p>
+            <div class="startup-name-section">
+                <input type="text" id="startup-name-input" placeholder="Enter your startup name" class="startup-name-input">
+                <button class="btn btn-primary btn-sm" onclick="updateStartupName()">Update</button>
+            </div>
+        </div>
+
+        <div class="results-bar" id="results-bar">
+            <!-- Founder results will be dynamically generated -->
+        </div>
+
+        <div class="table-container">
+            <table id="equity-table">
+                <thead>
+                    <tr>
+                        <th>Task/Responsibility</th>
+                        <th>Weight</th>
+                        <th id="col-founder1">Founder 1</th>
+                        <th id="col-founder2">Founder 2</th>
+                        <th id="col-founder3">Founder 3</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Content will be dynamically generated from JSON -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls">
+            <div class="founder-management">
+                <h4>Founder Management (Min: 2, Max: 10)</h4>
+                <div style="font-size: 0.85em; color: #7f8c8d; margin-bottom: 10px;">
+                    Current: <strong id="founder-count">0</strong> founders
+                </div>
+                <div class="founder-controls">
+                    <button class="btn btn-primary" onclick="addFounder()" id="add-founder-btn">Add Founder</button>
+                    <button class="btn btn-danger" onclick="removeFounder()" id="remove-founder-btn">Remove Founder</button>
+                </div>
+                <div id="founder-inputs">
+                    <!-- Founder inputs will be dynamically generated -->
+                </div>
+            </div>
+            <div class="task-management">
+                <h4>Task Management</h4>
+                <button class="btn btn-primary" onclick="addSection()">Add New Section</button>
+                <div class="task-options" style="margin-top: 10px;">
+                    <label for="quick-add-section">Add Task to Section:</label>
+                    <select id="quick-add-section" class="form-control" style="margin: 5px 0;">
+                        <option value="">Select section...</option>
+                    </select>
+                    <button class="btn btn-success btn-sm" onclick="quickAddTask()">Add Task</button>
+                </div>
+            </div>
+            <div class="export-controls">
+                <h4>Export & Reset</h4>
+                <div class="save-status" id="save-status">
+                    <span class="save-indicator" id="save-indicator">💾 All changes saved</span>
+                </div>
+                <button class="btn btn-info" onclick="saveToLocalStorage()" id="save-btn">Save to Local Storage</button>
+                <button class="btn btn-primary" onclick="exportToFile()">Export Backup</button>
+                <button class="btn btn-warning" onclick="importFromFile()">Import Backup</button>
+                <button class="btn btn-danger" onclick="resetToDefaults()">Reset to Defaults</button>
+            </div>
+            <div class="startup-management">
+                <h4>Startup Management</h4>
+                <button class="btn btn-primary" onclick="showStartupsManager()">Switch Startup</button>
+                <button class="btn btn-success" onclick="createNewStartup()">New Startup</button>
+            </div>
+        </div>
+
+        <div class="legend" style="padding: 20px 30px; background: #f8f9fa;">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ff6b6b;"></div>
+                <span>No contribution (0)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #feca57;"></div>
+                <span>Medium contribution (1-6)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #48dbfb;"></div>
+                <span>High contribution (7-8)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #1dd1a1;"></div>
+                <span>Full contribution (9-10)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>❤️ Developed By <a href="https://robinthomasonline.github.io/" target="_blank" rel="noopener noreferrer">Robin Thomas</a></p>
+    </footer>
+
+    <script>
+        let appData = {
+            startupName: "My Startup",
+            founders: [],
+            sections: []
+        };
+        let hasUnsavedChanges = false;
+        let autoSaveTimer = null;
+
+        // Initialize the calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateSaveStatus();
+        });
+
+        // Improved data storage system
+        const STORAGE_KEY = 'cofoundersData';
+        const STORAGE_VERSION = '1.0';
+        const BACKUP_KEY = 'cofoundersDataBackup';
+        const STARTUPS_KEY = 'cofoundersStartups';
+        
+        function saveData(data, isAutoSave = false) {
+            try {
+                const dataToSave = {
+                    version: STORAGE_VERSION,
+                    timestamp: new Date().toISOString(),
+                    data: data,
+                    isAutoSave: isAutoSave
+                };
+                
+                // Save to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+                
+                // Save to startups list for multiple startup management
+                saveToStartupsList(data);
+                
+                // Create backup (keep last 3 versions)
+                createBackup(dataToSave);
+                
+                // Update status
+                hasUnsavedChanges = false;
+                updateSaveStatus();
+                
+                console.log(`Data saved successfully (${isAutoSave ? 'auto' : 'manual'})`);
+                return true;
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showSaveError(error.message);
+                return false;
+            }
+        }
+        
+        function createBackup(currentData) {
+            try {
+                const backups = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]');
+                backups.push({
+                    ...currentData,
+                    backupTimestamp: new Date().toISOString()
+                });
+                
+                // Keep only last 3 backups
+                if (backups.length > 3) {
+                    backups.splice(0, backups.length - 3);
+                }
+                
+                localStorage.setItem(BACKUP_KEY, JSON.stringify(backups));
+            } catch (error) {
+                console.error('Error creating backup:', error);
+            }
+        }
+        
+        function loadData() {
+            try {
+                // Try to load from localStorage first
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    if (parsed.data && parsed.version === STORAGE_VERSION) {
+                        appData = parsed.data;
+                        renderApp();
+                        setupEventListeners();
+                        updateAllCalculations();
+                        console.log('Data loaded from localStorage');
+                        return;
+                    }
+                }
+                
+                // No saved data, use default empty data
+                appData = getDefaultData();
+                renderApp();
+                setupEventListeners();
+                updateAllCalculations();
+                console.log('Using default empty data');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Use default empty data on error
+                appData = getDefaultData();
+                renderApp();
+                setupEventListeners();
+                updateAllCalculations();
+                console.log('Using default empty data after error');
+            }
+        }
+        
+        function getDefaultData() {
+            return {
+                startupName: "My Startup",
+                founders: [],
+                sections: []
+            };
+        }
+        
+        function showSaveError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #e74c3c;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                max-width: 300px;
+                animation: slideIn 0.3s ease-out;
+            `;
+            errorDiv.innerHTML = `❌ Save failed: ${message}`;
+            
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(errorDiv);
+                }, 300);
+            }, 5000);
+        }
+        
+        function restoreFromBackup() {
+            try {
+                const backups = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]');
+                if (backups.length === 0) {
+                    alert('No backups available');
+                    return;
+                }
+                
+                const backupList = backups.map((backup, index) => 
+                    `${index + 1}. ${new Date(backup.backupTimestamp).toLocaleString()}`
+                ).join('\n');
+                
+                const choice = prompt(`Choose backup to restore (1-${backups.length}):\n\n${backupList}`);
+                const backupIndex = parseInt(choice) - 1;
+                
+                if (backupIndex >= 0 && backupIndex < backups.length) {
+                    const backup = backups[backupIndex];
+                    appData = backup.data;
+                    renderApp();
+                    setupEventListeners();
+                    updateAllCalculations();
+                    hasUnsavedChanges = false;
+                    updateSaveStatus();
+                    alert('Backup restored successfully!');
+                }
+            } catch (error) {
+                console.error('Error restoring backup:', error);
+                alert('Failed to restore backup');
+            }
+        }
+        
+        function exportToFile() {
+            const currentData = collectCurrentData();
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cofounders-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            // Show notification
+            showExportNotification();
+        }
+        
+        function showExportNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #17a2b8;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 0.9em;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = '📥 Backup exported successfully';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
+        
+        function saveToStartupsList(data) {
+            try {
+                const startups = JSON.parse(localStorage.getItem(STARTUPS_KEY) || '[]');
+                const startupName = data.startupName || 'My Startup';
+                
+                // Find existing startup or create new entry
+                const existingIndex = startups.findIndex(s => s.name === startupName);
+                const startupEntry = {
+                    name: startupName,
+                    lastModified: new Date().toISOString(),
+                    founderCount: data.founders.length,
+                    sectionCount: data.sections.length,
+                    data: data
+                };
+                
+                if (existingIndex !== -1) {
+                    // Update existing startup
+                    startups[existingIndex] = startupEntry;
+                } else {
+                    // Add new startup
+                    startups.push(startupEntry);
+                }
+                
+                // Keep only last 10 startups to prevent storage bloat
+                if (startups.length > 10) {
+                    startups.splice(0, startups.length - 10);
+                }
+                
+                localStorage.setItem(STARTUPS_KEY, JSON.stringify(startups));
+            } catch (error) {
+                console.error('Error saving to startups list:', error);
+            }
+        }
+        
+        function loadStartupsList() {
+            try {
+                const startups = JSON.parse(localStorage.getItem(STARTUPS_KEY) || '[]');
+                return startups;
+            } catch (error) {
+                console.error('Error loading startups list:', error);
+                return [];
+            }
+        }
+        
+        function switchToStartup(startupName) {
+            const startups = loadStartupsList();
+            const startup = startups.find(s => s.name === startupName);
+            
+            if (startup && startup.data) {
+                appData = startup.data;
+                renderApp();
+                setupEventListeners();
+                updateAllCalculations();
+                hasUnsavedChanges = false;
+                updateSaveStatus();
+                
+                showStartupSwitchNotification(startupName);
+            }
+        }
+        
+        function showStartupSwitchNotification(startupName) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #17a2b8;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 0.9em;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = `🔄 Switched to: ${startupName}`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        function showStartupsManager() {
+            const startups = loadStartupsList();
+            
+            if (startups.length === 0) {
+                alert('No saved startups found. Save your current startup first.');
+                return;
+            }
+            
+            const startupList = startups.map((startup, index) => 
+                `${index + 1}. ${startup.name} (${startup.founderCount} founders, ${startup.sectionCount} sections) - ${new Date(startup.lastModified).toLocaleDateString()}`
+            ).join('\n');
+            
+            const choice = prompt(`Choose startup to load (1-${startups.length}):\n\n${startupList}\n\nOr enter 'new' to create a new startup.`);
+            
+            if (choice === 'new') {
+                createNewStartup();
+            } else {
+                const startupIndex = parseInt(choice) - 1;
+                if (startupIndex >= 0 && startupIndex < startups.length) {
+                    const startupName = startups[startupIndex].name;
+                    switchToStartup(startupName);
+                }
+            }
+        }
+        
+        function createNewStartup() {
+            const newStartupName = prompt('Enter name for new startup:');
+            if (newStartupName && newStartupName.trim()) {
+                appData = getDefaultData();
+                appData.startupName = newStartupName.trim();
+                renderApp();
+                setupEventListeners();
+                updateAllCalculations();
+                hasUnsavedChanges = true;
+                updateSaveStatus();
+                
+                showStartupNameUpdateNotification(newStartupName.trim());
+            }
+        }
+        
+        function importFromFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            if (importedData.founders && importedData.sections) {
+                                appData = importedData;
+                                
+                                // Save imported data to localStorage
+                                saveData(appData, false);
+                                
+                                renderApp();
+                                setupEventListeners();
+                                updateAllCalculations();
+                                hasUnsavedChanges = false;
+                                updateSaveStatus();
+                                
+                                showImportNotification();
+                            } else {
+                                alert('Invalid data format. File must contain founders and sections.');
+                            }
+                        } catch (error) {
+                            alert('Error parsing file: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+        
+        function showImportNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 0.9em;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = '📤 Backup imported and saved to local storage';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        function renderApp() {
+            renderStartupName();
+            renderFounderResults();
+            renderFounderInputs();
+            renderTable();
+            updateQuickAddDropdown();
+        }
+
+        function setupEventListeners() {
+            // Add event listeners to all inputs
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateAllCalculations);
+                input.addEventListener('change', updateAllCalculations);
+                input.addEventListener('input', markAsChanged);
+                input.addEventListener('change', markAsChanged);
+            });
+
+            // Founder name inputs
+            const founderInputs = document.querySelectorAll('.founder-input');
+            founderInputs.forEach(input => {
+                input.addEventListener('input', updateFounderNames);
+                input.addEventListener('input', markAsChanged);
+            });
+
+            // Startup name input
+            const startupNameInput = document.getElementById('startup-name-input');
+            if (startupNameInput) {
+                startupNameInput.addEventListener('input', markAsChanged);
+                startupNameInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        updateStartupName();
+                    }
+                });
+            }
+        }
+
+        function renderStartupName() {
+            const startupTitle = document.getElementById('startup-title');
+            const startupNameInput = document.getElementById('startup-name-input');
+            
+            if (startupTitle) {
+                const startupName = appData.startupName || 'My Startup';
+                startupTitle.textContent = `${startupName} - Co Founder Pie`;
+            }
+            
+            if (startupNameInput) {
+                startupNameInput.value = appData.startupName || '';
+            }
+        }
+
+        function updateStartupName() {
+            const startupNameInput = document.getElementById('startup-name-input');
+            const newName = startupNameInput.value.trim();
+            
+            if (newName) {
+                appData.startupName = newName;
+                renderStartupName();
+                markAsChanged();
+                
+                // Show success notification
+                showStartupNameUpdateNotification(newName);
+            } else {
+                // Reset to default if empty
+                appData.startupName = 'Co-Founder Pie';
+                renderStartupName();
+                markAsChanged();
+            }
+        }
+
+        function showStartupNameUpdateNotification(name) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 0.9em;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = `✅ Startup name updated to: ${name}`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        function renderFounderResults() {
+            const resultsBar = document.getElementById('results-bar');
+            resultsBar.innerHTML = '';
+            
+            if (appData.founders.length === 0) {
+                resultsBar.innerHTML = '<div style="text-align: center; padding: 20px; color: #7f8c8d; font-style: italic;">Add at least 2 founders to start calculating equity distribution</div>';
+                return;
+            }
+            
+            appData.founders.forEach((founder, index) => {
+                const founderResult = document.createElement('div');
+                founderResult.className = 'founder-result';
+                founderResult.innerHTML = `
+                    <h3 id="founder${index + 1}-name">${founder.name}</h3>
+                    <div class="percentage" id="founder${index + 1}-percentage">0.00%</div>
+                `;
+                resultsBar.appendChild(founderResult);
+            });
+            
+            // Add total percentage
+            const totalPercentage = document.createElement('div');
+            totalPercentage.className = 'total-percentage';
+            totalPercentage.innerHTML = `Total: <span id="total-percentage">0.00%</span>`;
+            resultsBar.appendChild(totalPercentage);
+        }
+
+        function renderFounderInputs() {
+            const founderInputs = document.getElementById('founder-inputs');
+            founderInputs.innerHTML = '';
+            
+            // Update founder count display
+            const founderCount = document.getElementById('founder-count');
+            if (founderCount) {
+                founderCount.textContent = appData.founders.length;
+            }
+            
+            // Update add/remove buttons
+            const addFounderBtn = document.getElementById('add-founder-btn');
+            const removeFounderBtn = document.getElementById('remove-founder-btn');
+            if (addFounderBtn) {
+                addFounderBtn.disabled = appData.founders.length >= 10;
+                addFounderBtn.title = appData.founders.length >= 10 ? 'Maximum 10 founders reached' : 'Add Founder (Max: 10)';
+            }
+            if (removeFounderBtn) {
+                removeFounderBtn.disabled = appData.founders.length <= 2;
+                removeFounderBtn.title = appData.founders.length <= 2 ? 'Minimum 2 founders required' : 'Remove Founder (Min: 2)';
+            }
+            
+            if (appData.founders.length === 0) {
+                founderInputs.innerHTML = '<div style="text-align: center; padding: 15px; color: #7f8c8d; font-style: italic; background: #f8f9fa; border-radius: 5px;">No founders added yet. Click "Add Founder" to get started.</div>';
+                return;
+            }
+            
+            appData.founders.forEach((founder, index) => {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'founder-input-group';
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'founder-input';
+                input.id = `founder${index + 1}-input`;
+                input.value = founder.name;
+                input.placeholder = `Founder ${index + 1}`;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'founder-remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.title = 'Remove founder (Minimum 2 founders required)';
+                removeBtn.onclick = () => removeSpecificFounder(index);
+                removeBtn.disabled = appData.founders.length <= 2; // Minimum 2 founders
+                
+                inputGroup.appendChild(input);
+                inputGroup.appendChild(removeBtn);
+                founderInputs.appendChild(inputGroup);
+            });
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            // Update table headers
+            const thead = document.querySelector('thead tr');
+            thead.innerHTML = '<th>Task/Responsibility</th><th>Weight</th>';
+
+            if (appData.founders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #7f8c8d; font-style: italic;">Add at least 2 founders and tasks to start calculating equity distribution</td></tr>';
+                return;
+            }
+
+            appData.founders.forEach((founder, index) => {
+                const th = document.createElement('th');
+                th.id = `col-founder${index + 1}`;
+                th.textContent = founder.name;
+                thead.appendChild(th);
+            });
+            thead.innerHTML += '<th>Total</th>';
+
+            // Render sections and tasks
+            appData.sections.forEach((section, sectionIdx) => {
+                // Section header with controls (Add Task, Delete Section) - at the top
+                const sectionHeader = document.createElement('tr');
+                sectionHeader.className = 'section-header';
+                const totalCols = appData.founders.length + 3; // Task, Weight, founders, Total
+                sectionHeader.innerHTML = `
+                    <td colspan="${totalCols}" style="padding: 0 !important; width: 100%; background: #ecf0f1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 15px; background: #ecf0f1;">
+                            <span class="section-header-content" style="font-size: 1.1em; font-weight: bold; color: #2c3e50; text-align: left; flex: 0 0 auto;">${section.name}</span>
+                            <div class="section-controls" style="display: flex; gap: 8px; align-items: center; flex: 0 0 auto;">
+                                <button class="section-add-task-btn" onclick="addTaskToSectionByIndex(${sectionIdx})" title="Add task to this section">Add Task</button>
+                                <button class="section-delete-btn" onclick="deleteSectionByIndex(${sectionIdx})" title="Delete section">Delete Section</button>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(sectionHeader);
+                
+                // Section tasks
+                section.tasks.forEach(task => {
+                    const taskRow = document.createElement('tr');
+                    taskRow.innerHTML = `
+                        <td class="task-name">
+                            <span class="task-name-content">
+                                <input type="text" value="${task.name}" style="width: 100%; padding: 8px; border: 2px solid #bdc3c7; border-radius: 5px;">
+                            </span>
+                            <button class="delete-btn" onclick="deleteRow(this)" title="Delete task">×</button>
+                        </td>
+                        <td><input type="number" class="weight-input" value="${task.weight}" min="0" max="10"></td>
+                    `;
+                    task.contributions.forEach(contribution => {
+                        taskRow.innerHTML += `<td><input type="number" class="contribution-input" value="${contribution}" min="0" max="10"></td>`;
+                    });
+                    taskRow.innerHTML += '<td class="total-cell">10</td>';
+                    tbody.appendChild(taskRow);
+                });
+            });
+        }
+
+        function updateFounderNames() {
+            const founderInputs = document.querySelectorAll('.founder-input');
+            founderInputs.forEach((input, index) => {
+                const founderName = input.value || `Founder ${index + 1}`;
+                document.getElementById(`founder${index + 1}-name`).textContent = founderName;
+                document.getElementById(`col-founder${index + 1}`).textContent = founderName;
+                
+                // Update appData
+                if (appData.founders[index]) {
+                    appData.founders[index].name = founderName;
+                }
+            });
+        }
+
+        function updateAllCalculations() {
+            updateRowTotals();
+            updatePercentages();
+            updateInputColors();
+        }
+
+        function updateRowTotals() {
+            const rows = document.querySelectorAll('tbody tr:not(.section-header)');
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('.contribution-input');
+                const totalCell = row.querySelector('.total-cell');
+                
+                if (inputs.length > 0 && totalCell) {
+                    let total = 0;
+                    inputs.forEach(input => {
+                        total += parseInt(input.value) || 0;
+                    });
+                    totalCell.textContent = total;
+                }
+            });
+        }
+
+        function updatePercentages() {
+            const rows = document.querySelectorAll('tbody tr:not(.section-header)');
+            const founderTotals = new Array(appData.founders.length).fill(0);
+            let totalWeight = 0;
+
+            rows.forEach(row => {
+                const weightInput = row.querySelector('.weight-input');
+                const contributionInputs = row.querySelectorAll('.contribution-input');
+                
+                if (weightInput && contributionInputs.length >= appData.founders.length) {
+                    const weight = parseInt(weightInput.value) || 0;
+                    
+                    contributionInputs.forEach((input, index) => {
+                        const score = parseInt(input.value) || 0;
+                        founderTotals[index] += weight * score;
+                    });
+                    
+                    totalWeight += weight;
+                }
+            });
+
+            const grandTotal = founderTotals.reduce((sum, total) => sum + total, 0);
+            
+            if (grandTotal > 0) {
+                founderTotals.forEach((total, index) => {
+                    const percentage = ((total / grandTotal) * 100).toFixed(2);
+                    document.getElementById(`founder${index + 1}-percentage`).textContent = percentage + '%';
+                });
+                document.getElementById('total-percentage').textContent = '100.00%';
+            }
+        }
+
+        function updateInputColors() {
+            const inputs = document.querySelectorAll('.contribution-input');
+            
+            inputs.forEach(input => {
+                const value = parseInt(input.value) || 0;
+                
+                // Remove existing color classes
+                input.classList.remove('score-0', 'score-1', 'score-2', 'score-3', 'score-4', 
+                                    'score-5', 'score-6', 'score-7', 'score-8', 'score-9', 'score-10');
+                
+                // Add appropriate color class
+                if (value === 0) {
+                    input.classList.add('score-0');
+                } else if (value >= 1 && value <= 6) {
+                    input.classList.add(`score-${value}`);
+                } else if (value >= 7 && value <= 8) {
+                    input.classList.add(`score-${value}`);
+                } else if (value >= 9 && value <= 10) {
+                    input.classList.add(`score-${value}`);
+                }
+            });
+        }
+
+        function addRow() {
+            if (appData.founders.length < 2) {
+                alert('Please add at least 2 founders before adding tasks.');
+                return;
+            }
+            
+            // Create a default section if none exists
+            if (appData.sections.length === 0) {
+                appData.sections.push({
+                    name: "General Tasks",
+                    tasks: []
+                });
+            }
+            
+            // Let user choose which section to add the task to
+            if (appData.sections.length > 1) {
+                const sectionNames = appData.sections.map(s => s.name);
+                const sectionList = sectionNames.map((name, index) => `${index + 1}. ${name}`).join('\n');
+                const choice = prompt(`Choose section to add task (1-${appData.sections.length}):\n\n${sectionList}`);
+                
+                const sectionIndex = parseInt(choice) - 1;
+                if (sectionIndex >= 0 && sectionIndex < appData.sections.length) {
+                    addTaskToSectionByIndex(sectionIndex);
+                } else {
+                    alert('Invalid selection. Task not added.');
+                }
+            } else {
+                // Only one section, add to it
+                addTaskToSectionByIndex(0);
+            }
+        }
+        
+        function addTaskToSectionByIndex(sectionIndex) {
+            if (appData.founders.length < 2) {
+                alert('Please add at least 2 founders before adding tasks.');
+                return;
+            }
+            
+            const newTask = {
+                name: "New Task",
+                weight: 1,
+                contributions: new Array(appData.founders.length).fill(0)
+            };
+            appData.sections[sectionIndex].tasks.push(newTask);
+            renderTable();
+            setupEventListeners();
+            updateAllCalculations();
+            markAsChanged();
+        }
+        
+        function deleteSectionByIndex(sectionIndex) {
+            if (confirm(`Are you sure you want to delete the section "${appData.sections[sectionIndex].name}"?`)) {
+                appData.sections.splice(sectionIndex, 1);
+                renderTable();
+                setupEventListeners();
+                updateAllCalculations();
+                markAsChanged();
+            }
+        }
+        
+        function updateQuickAddDropdown() {
+            const dropdown = document.getElementById('quick-add-section');
+            if (dropdown) {
+                dropdown.innerHTML = '<option value="">Select section...</option>';
+                
+                appData.sections.forEach((section, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = section.name;
+                    dropdown.appendChild(option);
+                });
+            }
+        }
+        
+        function quickAddTask() {
+            if (appData.founders.length < 2) {
+                alert('Please add at least 2 founders before adding tasks.');
+                return;
+            }
+            
+            const dropdown = document.getElementById('quick-add-section');
+            const selectedIndex = parseInt(dropdown.value);
+            
+            if (selectedIndex >= 0 && selectedIndex < appData.sections.length) {
+                addTaskToSectionByIndex(selectedIndex);
+                
+                // Show success notification
+                const sectionName = appData.sections[selectedIndex].name;
+                showQuickAddNotification(sectionName);
+            } else {
+                alert('Please select a section first.');
+            }
+        }
+        
+        function showQuickAddNotification(sectionName) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 0.9em;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = `✅ Task added to: ${sectionName}`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
+
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            const taskName = row.querySelector('.task-name-content').textContent.trim() || 
+                           row.querySelector('.task-name-content input')?.value || 'this task';
+            
+            if (confirm(`Are you sure you want to delete "${taskName}"?`)) {
+                // Find the section and task index
+                const sectionIndex = findSectionIndexForRow(row);
+                const taskIndex = findTaskIndexInSection(row, sectionIndex);
+                
+                if (sectionIndex !== -1 && taskIndex !== -1) {
+                    // Remove task from appData
+                    appData.sections[sectionIndex].tasks.splice(taskIndex, 1);
+                    
+                    // Remove section if it has no tasks
+                    if (appData.sections[sectionIndex].tasks.length === 0) {
+                        appData.sections.splice(sectionIndex, 1);
+                    }
+                    
+                    // Re-render the table
+                    renderTable();
+                    setupEventListeners();
+                updateAllCalculations();
+                    markAsChanged();
+                }
+            }
+        }
+        
+        function findSectionIndexForRow(row) {
+            let currentRow = row.previousElementSibling;
+            let sectionIndex = -1;
+            
+            // Find the section header above this row
+            while (currentRow) {
+                if (currentRow.classList.contains('section-header')) {
+                    const sectionName = currentRow.querySelector('.section-header-content').textContent.trim();
+                    sectionIndex = appData.sections.findIndex(s => s.name === sectionName);
+                    break;
+                }
+                currentRow = currentRow.previousElementSibling;
+            }
+            
+            return sectionIndex;
+        }
+        
+        function findTaskIndexInSection(row, sectionIndex) {
+            if (sectionIndex === -1) return -1;
+            
+            const taskName = row.querySelector('.task-name-content').textContent.trim() || 
+                           row.querySelector('.task-name-content input')?.value || '';
+            
+            return appData.sections[sectionIndex].tasks.findIndex(t => t.name === taskName);
+        }
+
+        function addSection() {
+            if (appData.founders.length < 2) {
+                alert('Please add at least 2 founders before adding sections and tasks.');
+                return;
+            }
+            
+            const sectionName = prompt('Enter the name for the new section:');
+            if (sectionName && sectionName.trim()) {
+                // Add new section to appData
+                const newSection = {
+                    name: sectionName.trim(),
+                    tasks: [{
+                        name: "New Task",
+                        weight: 1,
+                        contributions: new Array(appData.founders.length).fill(0)
+                    }]
+                };
+                
+                appData.sections.push(newSection);
+                
+                // Re-render the table
+                renderTable();
+                setupEventListeners();
+                updateAllCalculations();
+                markAsChanged();
+                
+                // Update the dropdown
+                updateQuickAddDropdown();
+            }
+        }
+
+        function deleteSection(button) {
+            const sectionRow = button.closest('tr');
+            const sectionName = sectionRow.querySelector('.section-header-content').textContent.trim();
+            
+            // Find all task rows that belong to this section
+            const taskRows = [];
+            let currentRow = sectionRow.nextElementSibling;
+            
+            while (currentRow && !currentRow.classList.contains('section-header')) {
+                taskRows.push(currentRow);
+                currentRow = currentRow.nextElementSibling;
+            }
+            
+            const taskCount = taskRows.length;
+            const taskList = taskCount > 0 ? `\n\nThis will also delete ${taskCount} task${taskCount > 1 ? 's' : ''} under this section.` : '';
+            
+            if (confirm(`Are you sure you want to delete the section "${sectionName}"?${taskList}`)) {
+                // Remove section from appData
+                const sectionIndex = appData.sections.findIndex(s => s.name === sectionName);
+                if (sectionIndex !== -1) {
+                    appData.sections.splice(sectionIndex, 1);
+                    
+                    // Re-render the table
+                    renderTable();
+                    setupEventListeners();
+                updateAllCalculations();
+                    markAsChanged();
+                }
+            }
+        }
+
+        function addTaskToSection(button) {
+            const sectionRow = button.closest('tr');
+            const sectionName = sectionRow.querySelector('.section-header-content').textContent.trim();
+            
+            // Find the section in appData
+            const sectionIndex = appData.sections.findIndex(s => s.name === sectionName);
+            if (sectionIndex !== -1) {
+                // Add new task to the section
+                const newTask = {
+                    name: "New Task",
+                    weight: 1,
+                    contributions: new Array(appData.founders.length).fill(3)
+                };
+                
+                appData.sections[sectionIndex].tasks.push(newTask);
+                
+                // Re-render the table
+                renderTable();
+            setupEventListeners();
+            updateAllCalculations();
+                markAsChanged();
+            }
+        }
+
+        function exportToCSV() {
+            const startupName = appData.startupName || 'Co-Founder Pie';
+            const rows = document.querySelectorAll('tbody tr:not(.section-header)');
+            let csv = `Startup: ${startupName}\n`;
+            csv += 'Task,Weight';
+            
+            // Add founder names to header
+            appData.founders.forEach(founder => {
+                csv += `,${founder.name}`;
+            });
+            csv += ',Total\n';
+            
+            rows.forEach(row => {
+                const taskInput = row.querySelector('.task-name input');
+                const taskName = taskInput ? taskInput.value : row.querySelector('.task-name').textContent.trim();
+                const weight = row.querySelector('.weight-input').value;
+                const total = row.querySelector('.total-cell').textContent;
+                
+                csv += `"${taskName}",${weight}`;
+                
+                // Add contribution values
+                const contributionInputs = row.querySelectorAll('.contribution-input');
+                contributionInputs.forEach(input => {
+                    csv += `,${input.value}`;
+                });
+                
+                csv += `,${total}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${startupName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-equity-calculator.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function resetToDefaults() {
+            if (confirm('Are you sure you want to reset all values to defaults?')) {
+                location.reload();
+            }
+        }
+
+        function addFounder() {
+            if (appData.founders.length >= 10) {
+                alert('Maximum of 10 founders allowed.');
+                return;
+            }
+            
+            const newFounderName = prompt('Enter the name for the new founder:');
+            if (newFounderName && newFounderName.trim()) {
+                const newFounder = {
+                    name: newFounderName.trim(),
+                    color: getRandomColor()
+                };
+
+                appData.founders.push(newFounder);
+
+                // Update all existing tasks to include the new founder with contribution 0
+                appData.sections.forEach(section => {
+                    section.tasks.forEach(task => {
+                        task.contributions.push(0);
+                    });
+                });
+
+                renderApp();
+                setupEventListeners();
+                updateAllCalculations();
+                markAsChanged();
+            }
+        }
+
+        function removeFounder() {
+            if (appData.founders.length <= 2) {
+                alert('You must have at least 2 founders. Minimum requirement: 2 founders.');
+                return;
+            }
+            
+            const founderNames = appData.founders.map(f => f.name).join(', ');
+            const founderToRemove = prompt(`Enter the name of the founder to remove:\n\nCurrent founders: ${founderNames}`);
+            
+            if (founderToRemove) {
+                const index = appData.founders.findIndex(f => f.name.toLowerCase() === founderToRemove.toLowerCase());
+                if (index !== -1) {
+                    removeSpecificFounder(index);
+                } else {
+                    alert('Founder not found. Please enter the exact name.');
+                }
+            }
+        }
+
+        function removeSpecificFounder(index) {
+            if (appData.founders.length <= 2) {
+                alert('You must have at least 2 founders. Minimum requirement: 2 founders.');
+                return;
+            }
+            
+            const founderName = appData.founders[index].name;
+            if (confirm(`Are you sure you want to remove "${founderName}"? This will also remove their contribution data from all tasks.`)) {
+                // Remove founder from appData
+                appData.founders.splice(index, 1);
+                
+                // Remove their contributions from all tasks
+                appData.sections.forEach(section => {
+                    section.tasks.forEach(task => {
+                        task.contributions.splice(index, 1);
+                    });
+                });
+                
+                renderApp();
+                setupEventListeners();
+                updateAllCalculations();
+            }
+        }
+
+        function getRandomColor() {
+            const colors = [
+                '#3498db', '#e74c3c', '#f39c12', '#27ae60', '#9b59b6', 
+                '#1abc9c', '#e67e22', '#34495e', '#16a085', '#8e44ad'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+
+
+        function collectCurrentData() {
+            // Collect startup name
+            const startupNameInput = document.getElementById('startup-name-input');
+            const startupName = startupNameInput ? startupNameInput.value.trim() : appData.startupName || 'Co-Founder Pie';
+            
+            // Update appData with current startup name
+            appData.startupName = startupName;
+            
+            // Collect founder data
+            const founders = [];
+            const founderInputs = document.querySelectorAll('.founder-input');
+            founderInputs.forEach((input, index) => {
+                const founderName = input.value || `Founder ${index + 1}`;
+                const founderColor = appData.founders[index] ? appData.founders[index].color : getRandomColor();
+                founders.push({
+                    name: founderName,
+                    color: founderColor
+                });
+            });
+
+            // Update appData with current founder data
+            appData.founders = founders;
+
+            // Sync UI changes back to appData
+            syncUIToAppData();
+
+            return {
+                startupName: appData.startupName,
+                founders: appData.founders,
+                sections: appData.sections
+            };
+        }
+        
+        function syncUIToAppData() {
+            // Update task names, weights, and contributions from UI
+            const taskRows = document.querySelectorAll('tbody tr:not(.section-header)');
+            let taskIndex = 0;
+            
+            appData.sections.forEach(section => {
+                section.tasks.forEach(task => {
+                    if (taskRows[taskIndex]) {
+                        const row = taskRows[taskIndex];
+                        
+                        // Update task name
+                        const taskNameInput = row.querySelector('.task-name-content input');
+                        if (taskNameInput) {
+                            task.name = taskNameInput.value.trim() || task.name;
+                        }
+                        
+                        // Update weight
+                        const weightInput = row.querySelector('.weight-input');
+                        if (weightInput) {
+                            task.weight = parseInt(weightInput.value) || task.weight;
+                        }
+                        
+                        // Update contributions
+                        const contributionInputs = row.querySelectorAll('.contribution-input');
+                        contributionInputs.forEach((input, index) => {
+                            if (task.contributions[index] !== undefined) {
+                                task.contributions[index] = parseInt(input.value) || 0;
+                            }
+                        });
+                    }
+                    taskIndex++;
+                });
+            });
+        }
+
+        function showSaveSuccess() {
+            // Create a temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+            `;
+            successDiv.textContent = '✅ Configuration saved successfully';
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(successDiv);
+            
+            // Remove the message after 3 seconds
+            setTimeout(() => {
+                successDiv.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(successDiv);
+                    document.head.removeChild(style);
+                }, 300);
+            }, 3000);
+        }
+
+        function markAsChanged() {
+            hasUnsavedChanges = true;
+            updateSaveStatus();
+            
+            // Clear existing timer
+            if (autoSaveTimer) {
+                clearTimeout(autoSaveTimer);
+            }
+            
+            // Set new timer for auto-save (5 seconds delay)
+            autoSaveTimer = setTimeout(() => {
+                autoSave();
+            }, 5000);
+        }
+
+        function updateSaveStatus() {
+            const saveIndicator = document.getElementById('save-indicator');
+            const saveBtn = document.getElementById('save-btn');
+            
+            if (hasUnsavedChanges) {
+                saveIndicator.textContent = '⚠️ Unsaved changes';
+                saveIndicator.className = 'save-indicator unsaved';
+                saveBtn.textContent = 'Save to Local Storage *';
+                saveBtn.className = 'btn btn-info unsaved';
+            } else {
+                saveIndicator.textContent = '💾 All changes saved';
+                saveIndicator.className = 'save-indicator';
+                saveBtn.textContent = 'Save to Local Storage';
+                saveBtn.className = 'btn btn-info';
+            }
+        }
+
+        function autoSave() {
+            if (!hasUnsavedChanges) return;
+            
+            const saveIndicator = document.getElementById('save-indicator');
+            saveIndicator.textContent = '🔄 Auto-saving...';
+            saveIndicator.className = 'save-indicator saving';
+            
+            // Collect current data and save
+                const currentData = collectCurrentData();
+            const success = saveData(currentData, true);
+            
+            if (success) {
+                // Show auto-save notification
+                showAutoSaveNotification();
+            }
+        }
+
+        function showAutoSaveNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #17a2b8;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 0.9em;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = '💾 Auto-saved to browser storage';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
+
+        function saveToLocalStorage() {
+            // Collect current data from the UI
+            const currentData = collectCurrentData();
+            
+            // Save to localStorage
+            const saveSuccess = saveData(currentData, false);
+            
+            if (saveSuccess) {
+                // Show success message
+                showSaveSuccess();
+                
+                // Clear auto-save timer
+                if (autoSaveTimer) {
+                    clearTimeout(autoSaveTimer);
+                    autoSaveTimer = null;
+                }
+            }
+        }
+        
+
+        // Load from localStorage on page load (legacy support)
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('cofoundersData');
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    // Check if it's the new format
+                    if (parsedData.data && parsedData.version) {
+                        appData = parsedData.data;
+                    } else {
+                        // Legacy format
+                    appData = parsedData;
+                    }
+                    
+                    // Ensure startupName exists (for backward compatibility)
+                    if (!appData.startupName) {
+                        appData.startupName = 'My Startup';
+                    }
+                    
+                    renderApp();
+                    setupEventListeners();
+                    updateAllCalculations();
+                    updateSaveStatus();
+                } catch (error) {
+                    console.error('Error loading from localStorage:', error);
+                }
+            }
+        }
+
+        // Add beforeunload event to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Co-Founder Pie",
+        "url": "https://robinthomasonline.github.io/apps/cofounder-pie/",
+        "description": "Calculate fair equity distribution for startup co-founders based on contributions, tasks, and responsibilities. Supports 2-10 founders with weighted task scoring and automatic percentage calculations.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "creator": {
+            "@type": "Person",
+            "name": "Robin Thomas",
+            "url": "https://robinthomasonline.github.io"
+        },
+        "featureList": [
+            "Equity distribution calculator",
+            "Support for 2-10 founders",
+            "Weighted task scoring",
+            "Automatic percentage calculations",
+            "Local storage persistence",
+            "Multiple startup management",
+            "Export/Import functionality"
+        ]
+    }
+    </script>
+</body>
+</html>

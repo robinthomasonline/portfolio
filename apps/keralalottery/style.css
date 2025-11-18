@@ -232,4 +232,32 @@ body {
   .slot { width: 90px; min-width: 60px; }
   .slot-number { font-size: 1.3rem; min-width: 40px; }
   .first-prize-number { font-size: 1.3rem; min-width: 60px; }
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(183, 28, 28, 0.1);
+}
+
+.app-footer p {
+  color: #ffe082;
+  font-size: 0.875rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.app-footer a {
+  color: #ffe082;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.app-footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 } 

@@ -45,6 +45,12 @@ The site hosts several free web applications:
 7. Kerala Lottery Draw Machine - Lottery simulator
    URL: https://robinthomasonline.github.io/apps/keralalottery/
 
+8. Resume & Cover Letter Generator - AI-powered ATS-friendly resume and cover letter generator
+   URL: https://robinthomasonline.github.io/apps/resume-cover/
+
+9. Co-Founder Pie - Calculate fair equity distribution for startup co-founders
+   URL: https://robinthomasonline.github.io/apps/cofounder-pie/
+
 # External Projects
 - Smart HOMI: https://smarthomi.app
 - Bookingtrails: https://bookingtrails.com

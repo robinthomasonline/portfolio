@@ -23,6 +23,8 @@ Allow: /apps/kanban/
 Allow: /apps/password/
 Allow: /apps/mood/
 Allow: /apps/keralalottery/
+Allow: /apps/cofounder-pie/
+Allow: /apps/resume-cover/
 
 # Allow static assets
 Allow: /*.css$

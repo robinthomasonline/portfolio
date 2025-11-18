@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free AI-powered ATS-friendly resume and cover letter generator. Create keyword-rich, tailored resumes and cover letters optimized for international job markets. Uses Gemini AI for intelligent document generation with PDF export.">
+    <meta name="keywords" content="resume generator, cover letter generator, ATS resume, ATS-friendly resume, resume builder, cover letter builder, AI resume, AI cover letter, job application, resume maker, CV generator, ATS optimization, keyword-rich resume, international resume, Gemini AI resume">
+    <meta name="author" content="Robin Thomas">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://robinthomasonline.github.io/apps/resume-cover/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://robinthomasonline.github.io/apps/resume-cover/">
+    <meta property="og:title" content="ATS-Friendly Resume & Cover Letter Generator | AI-Powered | International Standards">
+    <meta property="og:description" content="Free AI-powered ATS-friendly resume and cover letter generator. Create keyword-rich, tailored documents optimized for international job markets with Gemini AI.">
+    <meta property="og:site_name" content="Robin Thomas - Projects">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://robinthomasonline.github.io/apps/resume-cover/">
+    <meta name="twitter:title" content="ATS-Friendly Resume & Cover Letter Generator | AI-Powered">
+    <meta name="twitter:description" content="Free AI-powered ATS-friendly resume and cover letter generator. Create keyword-rich, tailored documents optimized for international job markets.">
+    
+    <title>ATS-Friendly Resume & Cover Letter Generator | AI-Powered | International Standards | Robin Thomas</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,0 L80,0 L80,10 L100,30 L100,100 L0,100 L0,20 Z' fill='%23A78BFA'/%3E%3Cpath d='M50,40 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0 M20,90 h60 a30,30 0 0,0 -60,0' fill='white'/%3E%3C/svg%3E">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111827;
+            color: #F9FAFB;
+            margin: 0;
+            padding: 8px;
+        }
+        .main-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 40px 0 32px 0;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        .left-col, .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .input-block, .textarea-block {
+            width: 100%;
+            background: #1F2937;
+            color: #F9FAFB;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 0;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-block::placeholder, .textarea-block::placeholder {
+            color: #9CA3AF;
+        }
+        .input-block:focus, .textarea-block:focus {
+            border-color: #A78BFA;
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+            outline: none;
+        }
+        .textarea-block {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .button-row {
+            display: flex;
+            gap: 18px;
+            margin-top: 8px;
+        }
+        .full-width-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #8B5CF6 0%, #6366F1 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .full-width-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        .full-width-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .btn-secondary {
+            background: #374151;
+        }
+        .btn-secondary:hover {
+            background: #4B5563;
+            box-shadow: none;
+        }
+        .preview-block {
+            width: 100%;
+            background: #1F2937;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            padding: 24px;
+            min-height: 60px;
+            margin-bottom: 0;
+            font-size: 1rem;
+            color: #D1D5DB;
+        }
+        .resume-preview-section { margin-bottom: 24px; }
+        .resume-preview-section h4 { 
+            font-size: 1.2rem; 
+            color: #A78BFA; 
+            margin-bottom: 12px; 
+            border-bottom: 1px solid #4B5563; 
+            padding-bottom: 8px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .job-entry { margin-bottom: 18px; }
+        .job-title { font-weight: 600; font-size: 1.05rem; color: #fff; }
+        .company-duration { font-style: normal; color: #9CA3AF; margin-bottom: 8px; font-size:0.9rem; }
+        .responsibilities { padding-left: 20px; list-style-type: '→ '; }
+        .responsibilities li { margin-bottom: 8px; }
+        
+        .job-type-group {
+            background: #1F2937;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #374151;
+        }
+        .job-type-group label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .job-type-group label:last-child {
+            margin-bottom: 0;
+        }
+        .job-type-group input {
+            margin-right: 10px;
+            accent-color: #8B5CF6;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 0 8px;
+            }
+        }
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #8B5CF6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover {
+            background: #7C3AED;
+        }
+        .copy-btn svg {
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            border-top: 3px solid #8B5CF6;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Edit mode styles */
+        .edit-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .edit-btn {
+            background: #10B981;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .edit-btn:hover {
+            background: #059669;
+        }
+        .edit-btn.cancel {
+            background: #EF4444;
+        }
+        .edit-btn.cancel:hover {
+            background: #DC2626;
+        }
+        .edit-btn.save {
+            background: #3B82F6;
+        }
+        .edit-btn.save:hover {
+            background: #2563EB;
+        }
+        .edit-mode {
+            background: #1F2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .edit-section {
+            margin-bottom: 20px;
+        }
+        .edit-section h5 {
+            color: #A78BFA;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .edit-textarea {
+            width: 100%;
+            background: #374151;
+            color: #F9FAFB;
+            border: 1px solid #4B5563;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            min-height: 60px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .edit-textarea:focus {
+            border-color: #A78BFA;
+            outline: none;
+        }
+        .edit-bullets {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .bullet-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .bullet-item input {
+            flex: 1;
+            background: #374151;
+            color: #F9FAFB;
+            border: 1px solid #4B5563;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .bullet-item input:focus {
+            border-color: #A78BFA;
+            outline: none;
+        }
+        .remove-bullet {
+            background: #EF4444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add-bullet {
+            background: #10B981;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .add-bullet:hover {
+            background: #059669;
+        }
+        .job-edit {
+            background: #374151;
+            border: 1px solid #4B5563;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .job-edit-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .job-edit-header input {
+            background: #4B5563;
+            color: #F9FAFB;
+            border: 1px solid #6B7280;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .job-edit-header input:focus {
+            border-color: #A78BFA;
+            outline: none;
+        }
+        .remove-job {
+            background: #EF4444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .add-job {
+            background: #3B82F6;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .add-job:hover {
+            background: #2563EB;
+        }
+        
+        /* Message styles */
+        .message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .message.success {
+            background: #10B981;
+            color: white;
+        }
+        .message.error {
+            background: #EF4444;
+            color: white;
+        }
+        .message.warning {
+            background: #F59E0B;
+            color: white;
+        }
+        .message.info {
+            background: #3B82F6;
+            color: white;
+        }
+        
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .app-footer p {
+            color: #9CA3AF;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .app-footer a {
+            color: #8B5CF6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .app-footer a:hover {
+            color: #A78BFA;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-title">ATS-Friendly Resume & Cover Letter Generator</div>
+    <div style="text-align: center; color: #9CA3AF; font-size: 1rem; margin-bottom: 32px; font-style: italic;">
+        Optimized for International Job Market Standards • Keyword-Rich • ATS-Compatible
+    </div>
+    <div class="main-grid">
+        <div class="left-col">
+            <input id="fullName" class="input-block" placeholder="Full Name" />
+            <input id="phone" class="input-block" placeholder="Phone" />
+            <input id="linkedin" class="input-block" placeholder="Linkedin" />
+            <input id="email" class="input-block" placeholder="Email" />
+            <input id="location" class="input-block" placeholder="Location" />
+            <input type="password" id="geminiApiKey" class="input-block" placeholder="Gemini API" />
+            <div class="job-type-group">
+                <label><input type="radio" name="jobType" value="fulltime-tech" checked> Full Time (Technical)</label>
+                <label><input type="radio" name="jobType" value="fulltime-nontech"> Full Time (Non-Technical)</label>
+                <label><input type="radio" name="jobType" value="parttime-tech"> Part Time/Casual (Technical)</label>
+                <label><input type="radio" name="jobType" value="parttime-nontech"> Part Time/Casual (Non-Technical)</label>
+            </div>
+            <div class="button-row">
+                <button id="saveProfile" class="full-width-btn btn-secondary">Save Data</button>
+                <button id="loadProfile" class="full-width-btn btn-secondary">Load Data</button>
+            </div>
+        </div>
+        <div class="right-col">
+            <textarea id="userResume" class="textarea-block" placeholder="Master Resume"></textarea>
+            <textarea id="jobDescription" class="textarea-block" placeholder="Job Description"></textarea>
+            <button id="extract-keywords" class="full-width-btn btn-secondary" style="margin-bottom: 8px;">Extract Keywords</button>
+            <div id="keywords-display" class="preview-block" style="display:none;">
+                <h4 style="color: #A78BFA; margin-bottom: 12px; border-bottom: 1px solid #4B5563; padding-bottom: 8px;">KEYWORDS FOUND</h4>
+                <div id="keywords-content"></div>
+            </div>
+            <div class="button-row">
+                <button id="generate-resume" class="full-width-btn">Generate Resume</button>
+                <button id="generate-cover" class="full-width-btn">Generate Cover Letter</button>
+            </div>
+            <div id="resume-preview" class="preview-block" style="display:none;">
+                <div class="edit-controls">
+                    <button id="edit-resume" class="edit-btn">Edit Resume</button>
+                    <button id="save-edits" class="edit-btn save" style="display:none;">Save Changes</button>
+                    <button id="cancel-edits" class="edit-btn cancel" style="display:none;">Cancel</button>
+                </div>
+                <div id="edit-mode" class="edit-mode" style="display:none;">
+                    <!-- Edit form will be dynamically generated here -->
+                </div>
+                <div id="preview-content"></div>
+            </div>
+            <div id="cover-preview" class="preview-block" style="display:none;">
+                <div class="edit-controls">
+                    <button id="edit-cover" class="edit-btn">Edit Cover Letter</button>
+                    <button id="save-cover-edits" class="edit-btn save" style="display:none;">Save Changes</button>
+                    <button id="cancel-cover-edits" class="edit-btn cancel" style="display:none;">Cancel</button>
+                </div>
+                <div id="cover-edit-mode" class="edit-mode" style="display:none;">
+                    <div class="edit-section">
+                        <h5>Cover Letter Content</h5>
+                        <textarea id="cover-edit-textarea" class="edit-textarea" placeholder="Edit your cover letter content here..."></textarea>
+                    </div>
+                </div>
+                <div id="cover-content"></div>
+            </div>
+            <button id="download-resume" class="full-width-btn" style="margin-top: 12px;" disabled>Download PDF</button>
+        </div>
+    </div>
+    <div id="message-container"></div>
+    <input type="file" id="import-file" accept="application/json" style="display:none;" />
+    
+    <!-- ATS Tips Section -->
+    <div id="ats-tips" class="preview-block" style="margin-top: 24px; background: #1F2937; border: 1px solid #374151; border-radius: 8px; padding: 20px;">
+        <h4 style="color: #A78BFA; margin-bottom: 16px; border-bottom: 1px solid #4B5563; padding-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">🎯 ATS OPTIMIZATION TIPS</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; color: #D1D5DB; font-size: 0.9rem;">
+            <div>
+                <h5 style="color: #10B981; margin-bottom: 8px;">✅ DO:</h5>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Use exact keywords from job description</li>
+                    <li>Include both acronyms and full terms</li>
+                    <li>Start bullets with action verbs</li>
+                    <li>Quantify achievements with numbers</li>
+                    <li>Use standard section headings</li>
+                    <li>Keep formatting simple and clean</li>
+                </ul>
+            </div>
+            <div>
+                <h5 style="color: #EF4444; margin-bottom: 8px;">❌ AVOID:</h5>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Complex graphics or tables</li>
+                    <li>Headers/footers for critical info</li>
+                    <li>Unusual fonts or formatting</li>
+                    <li>Photos or images</li>
+                    <li>Text boxes or columns</li>
+                    <li>Generic, non-tailored content</li>
+                </ul>
+            </div>
+        </div>
+        <div style="margin-top: 16px; padding: 12px; background: #374151; border-radius: 6px; border-left: 4px solid #8B5CF6;">
+            <p style="margin: 0; color: #A78BFA; font-weight: 500;">💡 Pro Tip: Always tailor your resume for each job application. Use the keyword extraction tool above to identify the most important terms to include.</p>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>❤️ Developed By <a href="https://robinthomasonline.github.io/" target="_blank" rel="noopener noreferrer">Robin Thomas</a></p>
+    </footer>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ATS-Friendly Resume & Cover Letter Generator",
+        "description": "Free AI-powered ATS-friendly resume and cover letter generator. Create keyword-rich, tailored resumes and cover letters optimized for international job markets. Uses Gemini AI for intelligent document generation with PDF export.",
+        "url": "https://robinthomasonline.github.io/apps/resume-cover/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Robin Thomas",
+            "url": "https://robinthomasonline.github.io"
+        },
+        "featureList": [
+            "AI-powered resume generation using Gemini AI",
+            "ATS-optimized formatting and structure",
+            "Keyword extraction from job descriptions",
+            "International standards support (US, UK, Australia, etc.)",
+            "PDF export functionality",
+            "Editable generated content",
+            "Cover letter generation",
+            "Profile data save/load functionality",
+            "Job type customization (Technical/Non-Technical, Full-time/Part-time)"
+        ],
+        "softwareVersion": "1.0",
+        "browserRequirements": "Requires JavaScript. Requires HTML5."
+    }
+    </script>
+    <script>
+    // Helper: show messages
+    function showMessage(msg, type) {
+        const container = document.getElementById('message-container');
+        container.innerHTML = '';
+        if (msg) {
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = msg;
+            container.appendChild(div);
+            setTimeout(() => { div.remove(); }, 4000);
+        }
+    }
+
+    // Gemini API call
+    async function callGeminiAI(prompt, apiKey) {
+        const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+        const body = {
+            contents: [{ parts: [{ text: prompt }] }]
+        };
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            const errorMessage = errorData?.error?.message || 'Unknown Gemini API Error';
+            throw new Error(`Gemini API Error: ${errorMessage}`);
+        }
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    }
+
+    // Helper: get selected job type
+    function getJobType() {
+        return document.querySelector('input[name="jobType"]:checked').value;
+    }
+
+    // Keyword extraction function
+    function extractKeywords(jobDescription) {
+        const commonWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their']);
+        
+        // Extract words and clean them
+        const words = jobDescription.toLowerCase()
+            .replace(/[^\w\s]/g, ' ')
+            .split(/\s+/)
+            .filter(word => word.length > 2 && !commonWords.has(word));
+        
+        // Count frequency
+        const wordCount = {};
+        words.forEach(word => {
+            wordCount[word] = (wordCount[word] || 0) + 1;
+        });
+        
+        // Sort by frequency and return top keywords
+        return Object.entries(wordCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 20)
+            .map(([word, count]) => ({ word, count }));
+    }
+
+    // Display extracted keywords
+    function displayKeywords(keywords) {
+        const container = document.getElementById('keywords-content');
+        const keywordsDisplay = document.getElementById('keywords-display');
+        
+        if (keywords.length === 0) {
+            container.innerHTML = '<p style="color: #9CA3AF;">No significant keywords found. Make sure you have pasted a job description.</p>';
+        } else {
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">';
+            keywords.forEach(({ word, count }) => {
+                const intensity = count > 3 ? '#10B981' : count > 1 ? '#F59E0B' : '#6B7280';
+                html += `<div style="background: #374151; padding: 8px 12px; border-radius: 4px; border-left: 3px solid ${intensity};">
+                    <span style="font-weight: 600; color: #fff;">${word}</span>
+                    <span style="color: #9CA3AF; font-size: 0.9rem; margin-left: 8px;">(${count})</span>
+                </div>`;
+            });
+            html += '</div>';
+            html += '<p style="color: #9CA3AF; font-size: 0.9rem; margin-top: 12px; font-style: italic;">💡 Tip: Use these keywords naturally throughout your resume and cover letter to improve ATS matching.</p>';
+            container.innerHTML = html;
+        }
+        
+        keywordsDisplay.style.display = 'block';
+    }
+
+    // ATS-Friendly Resume Prompt with Australian Standards
+    function getResumePrompt(jobType, userResume, jobDescription) {
+        const jsonSchema = `{
+"profile_summary": "A 3-5 sentence professional summary that includes the exact job title and top keywords from the job description. Use strong action verbs and quantify achievements where possible.",
+"core_competencies": {
+"Category 1 (e.g., Leadership & Management)": ["Competency with quantified results", "Competency with quantified results"],
+"Category 2 (e.g., Communication & Collaboration)": ["Competency with quantified results", "Competency with quantified results"]
+},
+"technical_skills": {
+"Category 1 (e.g., Software & Tools)": ["Skill 1", "Skill 2", "Skill 3"],
+"Category 2 (e.g., Systems & Platforms)": ["Skill 1", "Skill 2", "Skill 3"]
+},
+"professional_experience": [
+{
+  "title": "Exact Job Title (match job description)",
+  "company": "Company Name",
+  "location": "City, State/Province, Country",
+  "date": "Month YYYY – Month YYYY",
+  "bullets": ["Action verb + quantified achievement + relevant keyword", "Action verb + quantified achievement + relevant keyword", "Action verb + quantified achievement + relevant keyword"]
+}
+],
+"accomplishments": ["Quantified accomplishment with relevant keywords", "Quantified accomplishment with relevant keywords"],
+"education": [
+{"degree": "Degree Name", "institution": "University Name", "year": "YYYY"}
+],
+"certifications": ["Certification Name (Year)", "Certification Name (Year)"]
+}`;
+
+        let focus = '';
+        if (jobType.includes('tech')) {
+            focus = 'Focus on technical skills, programming languages, software tools, and measurable technical achievements. Include both acronyms and full terms (e.g., "JavaScript (JS)", "Application Programming Interface (API)").';
+        } else if (jobType.includes('fulltime')) {
+            focus = 'Focus on leadership, teamwork, customer service, and measurable business achievements. Emphasize reliability, work ethic, and professional growth.';
+        } else { // part-time non-tech
+            focus = 'Focus on flexibility, reliability, customer service, and teamwork. Emphasize adaptability and willingness to learn.';
+        }
+
+        return `You are an expert ATS-friendly resume writer specializing in international job market standards. Generate a clean, keyword-rich resume that will pass ATS screening and appeal to human recruiters.
+
+**CRITICAL ATS REQUIREMENTS:**
+1. Use exact keywords from the job description throughout the resume
+2. Include both acronyms and full terms (e.g., "Customer Relationship Management (CRM)")
+3. Start all bullet points with strong action verbs (Managed, Developed, Implemented, Achieved, etc.)
+4. Quantify achievements with numbers, percentages, or metrics wherever possible
+5. Use standard date format (Month YYYY – Month YYYY or MM/YYYY – MM/YYYY based on the master resume format)
+6. Include location in standard format (City, State/Province, Country or City, Country based on the master resume format)
+7. Match job titles exactly as they appear in the job description
+8. Use appropriate spelling and terminology based on the target job location (US English, UK English, Australian English, etc.)
+
+**CONTENT STRATEGY:**
+- Extract and naturally integrate the top 10-15 keywords from the job description
+- Rewrite the professional summary to include the exact job title and most relevant keywords
+- Tailor each work experience bullet point to demonstrate skills mentioned in the job description
+- Use the STAR method (Situation, Task, Action, Result) for achievements
+- Focus on results and accomplishments, not just duties
+
+**CRITICAL REQUIREMENT - PROFESSIONAL EXPERIENCE:**
+- You MUST include ALL professional experience entries from the master resume
+- Do NOT skip or omit any job positions, even if they seem less relevant
+- Include every role with tailored bullet points that highlight relevant skills
+- If a role has many responsibilities, select the most relevant 3-4 points for the target job
+- Maintain chronological order (most recent first)
+- Count the total number of positions in the master resume and ensure ALL are included
+- If you find 5 positions in the master resume, include all 5 in the generated resume
+- If you find 3 positions in the master resume, include all 3 in the generated resume
+- NO EXCEPTIONS - every single professional experience entry must be included
+
+${focus}
+
+Return the result as a JSON object matching this schema:
+
+${jsonSchema}
+
+**Master Resume:**
+${userResume}
+
+**Target Job Description:**
+${jobDescription}
+
+**Instructions:** Analyze the job description carefully, extract key requirements and keywords, then create a tailored resume that demonstrates how the candidate's experience directly matches what the employer is seeking. CRITICAL: Include ALL professional experience entries from the master resume - do not skip any positions. Ensure every section reinforces the candidate's fit for this specific role.`;
+    }
+
+    // ATS-Friendly Cover Letter Prompt with Australian Standards
+    function getCoverLetterPrompt(jobType, userResume, jobDescription) {
+        let focusInstruction = '';
+        if (jobType === 'fulltime-tech') {
+            focusInstruction = 'Focus on technical skills, programming languages, software tools, and measurable technical achievements. Include specific technologies and quantify results.';
+        } else if (jobType === 'fulltime-nontech') {
+            focusInstruction = 'Focus on leadership, teamwork, customer service, and measurable business achievements. Emphasize reliability, work ethic, and professional growth.';
+        } else if (jobType === 'parttime-tech') {
+            focusInstruction = 'Focus on technical skills, flexibility, and willingness to learn new technologies. Highlight adaptability and technical problem-solving abilities.';
+        } else { // parttime-nontech
+            focusInstruction = 'Focus on reliability, flexibility, teamwork, and customer service. Emphasize adaptability and strong work ethic.';
+        }
+
+        return `You are an expert cover letter writer specializing in international professional standards and ATS optimization. Write a compelling, keyword-rich cover letter that will pass ATS screening and impress human recruiters.
+
+**CRITICAL ATS REQUIREMENTS:**
+1. Include the exact job title from the job description in the opening paragraph
+2. Naturally integrate 8-12 key keywords from the job description throughout the letter
+3. Use strong action verbs and quantify achievements with numbers/percentages
+4. Follow professional communication standards appropriate for the target job location
+5. Keep the letter to one page (approximately 300-400 words)
+6. Use appropriate spelling and terminology based on the target job location (US English, UK English, Australian English, etc.)
+
+**STRUCTURE (International Professional Format):**
+1. **Contact Information & Date:** Include date at the top
+2. **Recipient Information:** "Dear Hiring Manager," (or specific name if available)
+3. **Opening Paragraph:** State the exact job title, express genuine enthusiasm, and briefly mention your most relevant qualification
+4. **Body Paragraphs (2-3):** 
+   - Paragraph 1: Highlight your most relevant experience with quantified achievements
+   - Paragraph 2: Demonstrate how your skills match the job requirements
+   - Paragraph 3: Show knowledge of the company/role and express fit
+5. **Closing Paragraph:** Reiterate interest, include a call to action, and express availability for interview
+6. **Sign-off:** Use appropriate closing based on location ("Sincerely," for US, "Yours sincerely," for UK/Australia, or "Best regards," for international) followed by "[Your Full Name]"
+
+**CONTENT STRATEGY:**
+- Extract and naturally weave in the most important keywords from the job description
+- Use the STAR method (Situation, Task, Action, Result) for achievements
+- Include specific examples that directly address job requirements
+- Show genuine interest in the company and role
+- Demonstrate cultural fit and professional values
+
+${focusInstruction}
+
+**Master Resume:**
+${userResume}
+
+**Target Job Description:**
+${jobDescription}
+
+**Instructions:** Analyze the job description to identify key requirements, skills, and company values. Create a compelling narrative that demonstrates how the candidate's experience directly addresses the employer's needs. Ensure the letter feels personal and authentic while being keyword-optimized for ATS systems.`;
+    }
+
+    // Update renderResumeFromJSON to support advanced schema
+    function renderResumeFromJSON(resumeJSON) {
+        const preview = document.getElementById('preview-content');
+        preview.innerHTML = '';
+
+        // Helper for section
+        function section(title, html) {
+            return `<div class="resume-preview-section"><h4>${title}</h4>${html}</div>`;
+        }
+        // Helper for sub-section
+        function subSection(sub, html) {
+            return `<div style="margin-bottom:10px;"><strong>${sub}</strong><ul>${html}</ul></div>`;
+        }
+
+        // Profile Summary
+        if (resumeJSON.profile_summary) {
+            preview.innerHTML += section('Profile Summary', `<p>${resumeJSON.profile_summary}</p>`);
+        }
+        // Core Competencies
+        if (resumeJSON.core_competencies) {
+            let html = '';
+            for (const [sub, items] of Object.entries(resumeJSON.core_competencies)) {
+                html += subSection(sub, items.map(i => `<li>${i}</li>`).join(''));
+            }
+            preview.innerHTML += section('Core Competencies', html);
+        }
+        // Technical Skills
+        if (resumeJSON.technical_skills) {
+            let html = '';
+            for (const [sub, items] of Object.entries(resumeJSON.technical_skills)) {
+                html += subSection(sub, items.map(i => `<li>${i}</li>`).join(''));
+            }
+            preview.innerHTML += section('Technical Skills', html);
+        }
+        // Professional Experience
+        if (resumeJSON.professional_experience) {
+            let html = '';
+            for (const job of resumeJSON.professional_experience) {
+                html += `<div class="job-entry">
+                    <div class="job-title">${job.title}</div>
+                    <div class="company-duration">${job.company} | ${job.date}</div>
+                    <ul class="responsibilities">${(job.bullets||[]).map(b => `<li>${b}</li>`).join('')}</ul>
+                </div>`;
+            }
+            preview.innerHTML += section('Professional Experience', html);
+        }
+        // Accomplishments
+        if (resumeJSON.accomplishments) {
+            preview.innerHTML += section('Relevant Accomplishments', `<ul>${resumeJSON.accomplishments.map(a => `<li>${a}</li>`).join('')}</ul>`);
+        }
+        // Education
+        if (resumeJSON.education) {
+            let html = '';
+            for (const edu of resumeJSON.education) {
+                html += `<div class="job-entry">
+                    <div class="job-title">${edu.degree}</div>
+                    <div>${edu.institution}${edu.year ? ', ' + edu.year : ''}</div>
+                </div>`;
+            }
+            preview.innerHTML += section('Education', html);
+        }
+        // Certifications
+        if (resumeJSON.certifications) {
+            preview.innerHTML += section('Certifications', `<ul>${resumeJSON.certifications.map(c => `<li>${c}</li>`).join('')}</ul>`);
+        }
+        // Note: Right to Work and Other Information sections removed for cleaner resume
+    }
+
+    // Generate edit form from resume JSON
+    function generateEditForm(resumeJSON) {
+        const editMode = document.getElementById('edit-mode');
+        let html = '';
+
+        // Profile Summary
+        if (resumeJSON.profile_summary !== undefined) {
+            html += `<div class="edit-section">
+                <h5>Profile Summary</h5>
+                <textarea class="edit-textarea" data-field="profile_summary">${resumeJSON.profile_summary || ''}</textarea>
+            </div>`;
+        }
+
+        // Note: Right to Work section removed for cleaner resume
+
+        // Core Competencies
+        if (resumeJSON.core_competencies) {
+            html += `<div class="edit-section">
+                <h5>Core Competencies</h5>`;
+            for (const [category, items] of Object.entries(resumeJSON.core_competencies)) {
+                html += `<div style="margin-bottom: 15px;">
+                    <input type="text" class="edit-textarea" style="margin-bottom: 8px;" data-category="competency" data-original="${category}" value="${category}" placeholder="Category name">
+                    <div class="edit-bullets" data-category="competency" data-original="${category}">`;
+                items.forEach((item, index) => {
+                    html += `<div class="bullet-item">
+                        <input type="text" data-index="${index}" value="${item}" placeholder="Competency">
+                        <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+                    </div>`;
+                });
+                html += `</div>
+                    <button type="button" class="add-bullet" onclick="addBullet('competency', '${category}')">Add Competency</button>
+                </div>`;
+            }
+            html += `</div>`;
+        }
+
+        // Technical Skills
+        if (resumeJSON.technical_skills) {
+            html += `<div class="edit-section">
+                <h5>Technical Skills</h5>`;
+            for (const [category, items] of Object.entries(resumeJSON.technical_skills)) {
+                html += `<div style="margin-bottom: 15px;">
+                    <input type="text" class="edit-textarea" style="margin-bottom: 8px;" data-category="skill" data-original="${category}" value="${category}" placeholder="Category name">
+                    <div class="edit-bullets" data-category="skill" data-original="${category}">`;
+                items.forEach((item, index) => {
+                    html += `<div class="bullet-item">
+                        <input type="text" data-index="${index}" value="${item}" placeholder="Skill">
+                        <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+                    </div>`;
+                });
+                html += `</div>
+                    <button type="button" class="add-bullet" onclick="addBullet('skill', '${category}')">Add Skill</button>
+                </div>`;
+            }
+            html += `</div>`;
+        }
+
+        // Professional Experience
+        if (resumeJSON.professional_experience) {
+            html += `<div class="edit-section">
+                <h5>Professional Experience</h5>
+                <div id="jobs-container">`;
+            resumeJSON.professional_experience.forEach((job, jobIndex) => {
+                html += `<div class="job-edit" data-job-index="${jobIndex}">
+                    <div class="job-edit-header">
+                        <input type="text" data-field="title" value="${job.title}" placeholder="Job Title">
+                        <input type="text" data-field="company" value="${job.company}" placeholder="Company">
+                        <input type="text" data-field="date" value="${job.date}" placeholder="Date Range">
+                    </div>
+                    <div class="edit-bullets" data-job-bullets="${jobIndex}">`;
+                (job.bullets || []).forEach((bullet, bulletIndex) => {
+                    html += `<div class="bullet-item">
+                        <input type="text" data-index="${bulletIndex}" value="${bullet}" placeholder="Responsibility or achievement">
+                        <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+                    </div>`;
+                });
+                html += `</div>
+                    <button type="button" class="add-bullet" onclick="addJobBullet(${jobIndex})">Add Responsibility</button>
+                    <button type="button" class="remove-job" onclick="removeJob(${jobIndex})">Remove Job</button>
+                </div>`;
+            });
+            html += `</div>
+                <button type="button" class="add-job" onclick="addJob()">Add Job</button>
+            </div>`;
+        }
+
+        // Accomplishments
+        if (resumeJSON.accomplishments !== undefined) {
+            html += `<div class="edit-section">
+                <h5>Relevant Accomplishments</h5>
+                <div class="edit-bullets" data-field="accomplishments">`;
+            (resumeJSON.accomplishments || []).forEach((accomplishment, index) => {
+                html += `<div class="bullet-item">
+                    <input type="text" data-index="${index}" value="${accomplishment}" placeholder="Accomplishment">
+                    <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+                </div>`;
+            });
+            html += `</div>
+                <button type="button" class="add-bullet" onclick="addBullet('accomplishments')">Add Accomplishment</button>
+            </div>`;
+        }
+
+        // Education
+        if (resumeJSON.education) {
+            html += `<div class="edit-section">
+                <h5>Education</h5>
+                <div id="education-container">`;
+            resumeJSON.education.forEach((edu, eduIndex) => {
+                html += `<div class="job-edit" data-edu-index="${eduIndex}">
+                    <div class="job-edit-header">
+                        <input type="text" data-field="degree" value="${edu.degree}" placeholder="Degree">
+                        <input type="text" data-field="institution" value="${edu.institution}" placeholder="Institution">
+                        <input type="text" data-field="year" value="${edu.year || ''}" placeholder="Year">
+                    </div>
+                    <button type="button" class="remove-job" onclick="removeEducation(${eduIndex})">Remove Education</button>
+                </div>`;
+            });
+            html += `</div>
+                <button type="button" class="add-job" onclick="addEducation()">Add Education</button>
+            </div>`;
+        }
+
+        // Certifications
+        if (resumeJSON.certifications !== undefined) {
+            html += `<div class="edit-section">
+                <h5>Certifications</h5>
+                <div class="edit-bullets" data-field="certifications">`;
+            (resumeJSON.certifications || []).forEach((cert, index) => {
+                html += `<div class="bullet-item">
+                    <input type="text" data-index="${index}" value="${cert}" placeholder="Certification">
+                    <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+                </div>`;
+            });
+            html += `</div>
+                <button type="button" class="add-bullet" onclick="addBullet('certifications')">Add Certification</button>
+            </div>`;
+        }
+
+        // Note: Other Information section removed for cleaner resume
+
+        editMode.innerHTML = html;
+    }
+
+    // Helper functions for edit mode
+    function removeBullet(button) {
+        button.parentElement.remove();
+    }
+
+    function addBullet(category, originalCategory = null) {
+        let container;
+        if (category === 'competency' || category === 'skill') {
+            container = document.querySelector(`[data-category="${category}"][data-original="${originalCategory}"]`);
+        } else {
+            container = document.querySelector(`[data-category="${category}"]`) || 
+                       document.querySelector(`[data-field="${category}"]`);
+        }
+        if (container) {
+            const bulletItem = document.createElement('div');
+            bulletItem.className = 'bullet-item';
+            const index = container.children.length;
+            bulletItem.innerHTML = `
+                <input type="text" data-index="${index}" placeholder="${category === 'accomplishments' ? 'Accomplishment' : 
+                                                                       category === 'certifications' ? 'Certification' : 
+                                                                       category === 'other_information' ? 'Information' : 
+                                                                       category === 'competency' ? 'Competency' :
+                                                                       category === 'skill' ? 'Skill' : 'Item'}">
+                <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+            `;
+            container.appendChild(bulletItem);
+        }
+    }
+
+    function addJobBullet(jobIndex) {
+        const container = document.querySelector(`[data-job-bullets="${jobIndex}"]`);
+        if (container) {
+            const bulletItem = document.createElement('div');
+            bulletItem.className = 'bullet-item';
+            const index = container.children.length;
+            bulletItem.innerHTML = `
+                <input type="text" data-index="${index}" placeholder="Responsibility or achievement">
+                <button type="button" class="remove-bullet" onclick="removeBullet(this)">×</button>
+            `;
+            container.appendChild(bulletItem);
+        }
+    }
+
+    function removeJob(jobIndex) {
+        const jobElement = document.querySelector(`[data-job-index="${jobIndex}"]`);
+        if (jobElement) {
+            jobElement.remove();
+        }
+    }
+
+    function addJob() {
+        const container = document.getElementById('jobs-container');
+        const jobIndex = container.children.length;
+        const jobElement = document.createElement('div');
+        jobElement.className = 'job-edit';
+        jobElement.setAttribute('data-job-index', jobIndex);
+        jobElement.innerHTML = `
+            <div class="job-edit-header">
+                <input type="text" data-field="title" placeholder="Job Title">
+                <input type="text" data-field="company" placeholder="Company">
+                <input type="text" data-field="date" placeholder="Date Range">
+            </div>
+            <div class="edit-bullets" data-job-bullets="${jobIndex}"></div>
+            <button type="button" class="add-bullet" onclick="addJobBullet(${jobIndex})">Add Responsibility</button>
+            <button type="button" class="remove-job" onclick="removeJob(${jobIndex})">Remove Job</button>
+        `;
+        container.appendChild(jobElement);
+    }
+
+    function removeEducation(eduIndex) {
+        const eduElement = document.querySelector(`[data-edu-index="${eduIndex}"]`);
+        if (eduElement) {
+            eduElement.remove();
+        }
+    }
+
+    function addEducation() {
+        const container = document.getElementById('education-container');
+        const eduIndex = container.children.length;
+        const eduElement = document.createElement('div');
+        eduElement.className = 'job-edit';
+        eduElement.setAttribute('data-edu-index', eduIndex);
+        eduElement.innerHTML = `
+            <div class="job-edit-header">
+                <input type="text" data-field="degree" placeholder="Degree">
+                <input type="text" data-field="institution" placeholder="Institution">
+                <input type="text" data-field="year" placeholder="Year">
+            </div>
+            <button type="button" class="remove-job" onclick="removeEducation(${eduIndex})">Remove Education</button>
+        `;
+        container.appendChild(eduElement);
+    }
+
+    // Save edited data back to JSON
+    function saveEditedData() {
+        const editedJSON = { ...lastAIResumeJSON };
+
+        // Profile Summary
+        const profileSummary = document.querySelector('[data-field="profile_summary"]');
+        if (profileSummary) {
+            editedJSON.profile_summary = profileSummary.value;
+        }
+
+        // Note: Right to Work section removed for cleaner resume
+
+        // Core Competencies
+        const competencySection = document.querySelector('.edit-section h5');
+        if (competencySection && competencySection.textContent === 'Core Competencies') {
+            editedJSON.core_competencies = {};
+            const competencyContainer = competencySection.parentElement;
+            const categoryInputs = competencyContainer.querySelectorAll('input[data-category="competency"]');
+            categoryInputs.forEach(categoryInput => {
+                const categoryName = categoryInput.value.trim();
+                if (categoryName) {
+                    const bulletsContainer = categoryInput.parentElement.querySelector('.edit-bullets[data-category="competency"]');
+                    if (bulletsContainer) {
+                        const items = Array.from(bulletsContainer.children).map(item => 
+                            item.querySelector('input').value.trim()
+                        ).filter(item => item);
+                        if (items.length > 0) {
+                            editedJSON.core_competencies[categoryName] = items;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Technical Skills
+        const skillSections = document.querySelectorAll('.edit-section h5');
+        let technicalSkillsSection = null;
+        for (const section of skillSections) {
+            if (section.textContent === 'Technical Skills') {
+                technicalSkillsSection = section.parentElement;
+                break;
+            }
+        }
+        if (technicalSkillsSection) {
+            editedJSON.technical_skills = {};
+            const categoryInputs = technicalSkillsSection.querySelectorAll('input[data-category="skill"]');
+            categoryInputs.forEach(categoryInput => {
+                const categoryName = categoryInput.value.trim();
+                if (categoryName) {
+                    const bulletsContainer = categoryInput.parentElement.querySelector('.edit-bullets[data-category="skill"]');
+                    if (bulletsContainer) {
+                        const items = Array.from(bulletsContainer.children).map(item => 
+                            item.querySelector('input').value.trim()
+                        ).filter(item => item);
+                        if (items.length > 0) {
+                            editedJSON.technical_skills[categoryName] = items;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Professional Experience
+        const jobsContainer = document.getElementById('jobs-container');
+        if (jobsContainer) {
+            editedJSON.professional_experience = [];
+            const jobs = jobsContainer.children;
+            Array.from(jobs).forEach(job => {
+                const title = job.querySelector('[data-field="title"]').value;
+                const company = job.querySelector('[data-field="company"]').value;
+                const date = job.querySelector('[data-field="date"]').value;
+                const bulletsContainer = job.querySelector('.edit-bullets');
+                const bullets = Array.from(bulletsContainer.children).map(item => 
+                    item.querySelector('input').value.trim()
+                ).filter(item => item);
+
+                if (title && company) {
+                    editedJSON.professional_experience.push({
+                        title, company, date, bullets
+                    });
+                }
+            });
+        }
+
+        // Accomplishments
+        const accomplishmentsContainer = document.querySelector('[data-field="accomplishments"]');
+        if (accomplishmentsContainer) {
+            const items = Array.from(accomplishmentsContainer.children).map(item => 
+                item.querySelector('input').value.trim()
+            ).filter(item => item);
+            editedJSON.accomplishments = items;
+        }
+
+        // Education
+        const educationContainer = document.getElementById('education-container');
+        if (educationContainer) {
+            editedJSON.education = [];
+            const educations = educationContainer.children;
+            Array.from(educations).forEach(edu => {
+                const degree = edu.querySelector('[data-field="degree"]').value;
+                const institution = edu.querySelector('[data-field="institution"]').value;
+                const year = edu.querySelector('[data-field="year"]').value;
+
+                if (degree && institution) {
+                    editedJSON.education.push({ degree, institution, year });
+                }
+            });
+        }
+
+        // Certifications
+        const certificationsContainer = document.querySelector('[data-field="certifications"]');
+        if (certificationsContainer) {
+            const items = Array.from(certificationsContainer.children).map(item => 
+                item.querySelector('input').value.trim()
+            ).filter(item => item);
+            editedJSON.certifications = items;
+        }
+
+        // Note: Other Information section removed for cleaner resume
+
+        lastAIResumeJSON = editedJSON;
+        renderResumeFromJSON(editedJSON);
+    }
+
+    // Toggle edit mode
+    function toggleEditMode(showEdit) {
+        const editBtn = document.getElementById('edit-resume');
+        const saveBtn = document.getElementById('save-edits');
+        const cancelBtn = document.getElementById('cancel-edits');
+        const editMode = document.getElementById('edit-mode');
+        const previewContent = document.getElementById('preview-content');
+
+        if (showEdit) {
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+            editMode.style.display = 'block';
+            previewContent.style.display = 'none';
+            generateEditForm(lastAIResumeJSON);
+        } else {
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            editMode.style.display = 'none';
+            previewContent.style.display = 'block';
+        }
+    }
+
+    // Validation function to ensure all professional experience is included
+    function validateProfessionalExperience(originalResume, generatedResume) {
+        const originalText = originalResume.toLowerCase();
+        const generatedText = JSON.stringify(generatedResume).toLowerCase();
+        
+        // Extract job titles and companies from original resume (basic pattern matching)
+        const jobPatterns = [
+            /(?:position|role|title|job):\s*([^,\n]+)/gi,
+            /(?:worked at|employed at|company):\s*([^,\n]+)/gi,
+            /(?:at|@)\s*([A-Z][^,\n]+)/g
+        ];
+        
+        const foundJobs = [];
+        jobPatterns.forEach(pattern => {
+            let match;
+            while ((match = pattern.exec(originalText)) !== null) {
+                foundJobs.push(match[1].trim());
+            }
+        });
+        
+        // Check if generated resume mentions these jobs
+        const missingJobs = foundJobs.filter(job => 
+            job.length > 3 && !generatedText.includes(job.toLowerCase())
+        );
+        
+        return {
+            totalFound: foundJobs.length,
+            missingJobs: missingJobs,
+            isComplete: missingJobs.length === 0
+        };
+    }
+
+    // Update generate-resume to handle JSON
+    let lastAIResumeJSON = null;
+    let lastAICoverText = '';
+    document.getElementById('generate-resume').addEventListener('click', async () => {
+        const genResumeBtn = document.getElementById('generate-resume');
+        genResumeBtn.disabled = true;
+        const originalText = genResumeBtn.innerHTML;
+        genResumeBtn.innerHTML = '<span class="spinner"></span> Generating...';
+        const apiKey = document.getElementById('geminiApiKey').value.trim();
+        const jobDescription = document.getElementById('jobDescription').value.trim();
+        const userResume = document.getElementById('userResume').value.trim();
+        const jobType = getJobType();
+
+        if (!apiKey) {
+            showMessage('Please enter your Gemini API key.', 'error');
+            genResumeBtn.disabled = false;
+            genResumeBtn.innerHTML = originalText;
+            return;
+        }
+        if (!jobDescription) {
+            showMessage('Please paste the job description.', 'error');
+            genResumeBtn.disabled = false;
+            genResumeBtn.innerHTML = originalText;
+            return;
+        }
+        if (!userResume) {
+            showMessage('Please paste your existing resume.', 'error');
+            genResumeBtn.disabled = false;
+            genResumeBtn.innerHTML = originalText;
+            return;
+        }
+        showMessage('Generating resume with Gemini AI...', 'info');
+        try {
+            const prompt = getResumePrompt(jobType, userResume, jobDescription);
+            const jsonString = await callGeminiAI(prompt, apiKey);
+            const cleanedJsonString = jsonString.replace(/```json|```/g, '').trim(); // Clean up markdown
+            const resumeJSON = JSON.parse(cleanedJsonString);
+            
+            lastAIResumeJSON = resumeJSON; // Store JSON for PDF download
+            
+            // Validate that all professional experience is included
+            const validation = validateProfessionalExperience(userResume, resumeJSON);
+            const generatedExperienceCount = resumeJSON.professional_experience ? resumeJSON.professional_experience.length : 0;
+            
+            if (validation.totalFound > 0 && generatedExperienceCount < validation.totalFound) {
+                showMessage(`Warning: Professional experience may be incomplete. Expected ${validation.totalFound} positions, but only ${generatedExperienceCount} were included. Please review the generated resume and regenerate if needed.`, 'warning');
+            } else if (generatedExperienceCount === 0) {
+                showMessage(`Warning: No professional experience was included in the generated resume. Please check your master resume format and try again.`, 'warning');
+            }
+            
+            renderResumeFromJSON(resumeJSON); // Render styled HTML preview
+
+            document.getElementById('resume-preview').style.display = 'block';
+            document.getElementById('download-resume').disabled = false;
+            showMessage('Resume generated with Gemini AI!', 'success');
+        } catch (e) {
+            showMessage('Gemini API error or invalid JSON: ' + e.message, 'error');
+        } finally {
+            genResumeBtn.disabled = false;
+            genResumeBtn.innerHTML = originalText;
+        }
+    });
+
+    // Edit mode event listeners
+    document.getElementById('edit-resume').addEventListener('click', () => {
+        if (lastAIResumeJSON) {
+            toggleEditMode(true);
+        } else {
+            showMessage('Please generate a resume first.', 'error');
+        }
+    });
+
+    document.getElementById('save-edits').addEventListener('click', () => {
+        saveEditedData();
+        toggleEditMode(false);
+        showMessage('Resume updated successfully!', 'success');
+    });
+
+    document.getElementById('cancel-edits').addEventListener('click', () => {
+        toggleEditMode(false);
+        showMessage('Edit cancelled.', 'info');
+    });
+
+    // ATS-Friendly PDF Generation with Clean Layout
+    function downloadAsPDF(resumeJSON) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+        const margin = 50; // Increased margin for better readability
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const contentWidth = pageWidth - 2 * margin;
+        const lineHeight = 14; // Standard line height for ATS readability
+        const sectionSpacing = 18; // Consistent spacing between sections
+        let currentY = margin;
+
+        // ATS-Friendly font settings
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11); // Standard 11pt font for body text
+
+        function checkPageBreak(heightNeeded) {
+            if (currentY + heightNeeded > doc.internal.pageSize.getHeight() - margin) {
+                doc.addPage();
+                currentY = margin;
+            }
+        }
+
+        // --- ATS-Friendly Personal Info Header ---
+        const name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const linkedin = document.getElementById('linkedin').value.trim();
+        const location = document.getElementById('location').value.trim();
+
+        // Name in bold, centered
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18); // Slightly smaller for ATS compatibility
+        doc.text(name || 'Your Name', pageWidth / 2, currentY, { align: 'center' });
+        currentY += 24;
+
+        // Contact information on separate lines (excluding location)
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        
+        // Phone and Email on first line
+        const phoneEmail = [phone, email].filter(Boolean);
+        if (phoneEmail.length > 0) {
+            const phoneEmailText = phoneEmail.join(' | ');
+            doc.text(phoneEmailText, pageWidth / 2, currentY, { align: 'center' });
+            currentY += lineHeight + 4;
+        }
+        
+        // LinkedIn on second line
+        if (linkedin) {
+            doc.text(`LinkedIn: ${linkedin}`, pageWidth / 2, currentY, { align: 'center' });
+            currentY += lineHeight + 4;
+        }
+        
+        currentY += sectionSpacing;
+
+        // Clean section helpers without line separators
+        function pdfSection(title) {
+            checkPageBreak(sectionSpacing + lineHeight);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(13); // Standard heading size for ATS
+            doc.text(title.toUpperCase(), margin, currentY); // Uppercase for ATS recognition
+            currentY += lineHeight + 8; // Simple spacing without line separator
+        }
+        
+        function pdfBullets(items) {
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            for (const item of items) {
+                const lines = doc.splitTextToSize('• ' + item, contentWidth - 15);
+                checkPageBreak(lines.length * lineHeight);
+                doc.text(lines, margin + 15, currentY);
+                currentY += lines.length * lineHeight + 2; // Slight spacing between bullets
+            }
+            currentY += sectionSpacing / 2;
+        }
+        
+        function pdfSubSection(sub, items) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text(sub, margin, currentY);
+            currentY += lineHeight + 2;
+            pdfBullets(items);
+        }
+
+        // Profile Summary
+        if (resumeJSON.profile_summary) {
+            pdfSection('Profile Summary');
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            const lines = doc.splitTextToSize(resumeJSON.profile_summary, contentWidth);
+            doc.text(lines, margin, currentY);
+            currentY += lines.length * lineHeight + sectionSpacing;
+        }
+        // Core Competencies
+        if (resumeJSON.core_competencies) {
+            pdfSection('Core Competencies');
+            for (const [sub, items] of Object.entries(resumeJSON.core_competencies)) {
+                pdfSubSection(sub, items);
+            }
+            currentY += sectionSpacing / 2;
+        }
+        // Technical Skills
+        if (resumeJSON.technical_skills) {
+            pdfSection('Technical Skills');
+            for (const [sub, items] of Object.entries(resumeJSON.technical_skills)) {
+                pdfSubSection(sub, items);
+            }
+            currentY += sectionSpacing / 2;
+        }
+        // Professional Experience
+        if (resumeJSON.professional_experience) {
+            pdfSection('Professional Experience');
+            for (const job of resumeJSON.professional_experience) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.text(job.title, margin, currentY);
+                doc.setFont('helvetica', 'normal');
+                const companyText = `${job.company} | ${job.date}`;
+                doc.text(companyText, margin, currentY + lineHeight);
+                currentY += lineHeight * 2.2;
+                pdfBullets(job.bullets || []);
+            }
+            currentY += sectionSpacing / 2;
+        }
+        // Accomplishments
+        if (resumeJSON.accomplishments) {
+            pdfSection('Relevant Accomplishments');
+            pdfBullets(resumeJSON.accomplishments);
+        }
+        // Education
+        if (resumeJSON.education) {
+            pdfSection('Education');
+            for (const edu of resumeJSON.education) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.text(edu.degree, margin, currentY);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`${edu.institution}${edu.year ? ', ' + edu.year : ''}`, margin, currentY + lineHeight);
+                currentY += lineHeight * 2 + sectionSpacing / 2;
+            }
+        }
+        // Certifications
+        if (resumeJSON.certifications) {
+            pdfSection('Certifications');
+            pdfBullets(resumeJSON.certifications);
+        }
+        // Note: Right to Work and Other Information sections removed for cleaner resume
+        const safeName = name ? name.replace(/\s+/g, '_') + '.pdf' : 'resume.pdf';
+        doc.save(safeName);
+    }
+    document.getElementById('download-resume').addEventListener('click', () => {
+        if (lastAIResumeJSON) {
+            downloadAsPDF(lastAIResumeJSON);
+        }
+    });
+
+    // Save Data to JSON file (except JD)
+    document.getElementById('saveProfile').addEventListener('click', () => {
+        const data = {
+            geminiApiKey: document.getElementById('geminiApiKey').value,
+            userResume: document.getElementById('userResume').value,
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            linkedin: document.getElementById('linkedin').value,
+            location: document.getElementById('location').value
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Profile.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showMessage('Data exported as Profile.json!', 'success');
+    });
+
+    // Load Data from JSON file
+    document.getElementById('loadProfile').addEventListener('click', () => {
+        document.getElementById('import-file').click();
+    });
+
+    // Keyword extraction event listener
+    document.getElementById('extract-keywords').addEventListener('click', () => {
+        const jobDescription = document.getElementById('jobDescription').value.trim();
+        if (!jobDescription) {
+            showMessage('Please paste a job description first.', 'error');
+            return;
+        }
+        
+        const keywords = extractKeywords(jobDescription);
+        displayKeywords(keywords);
+        showMessage('Keywords extracted successfully! Use these in your resume and cover letter.', 'success');
+    });
+    document.getElementById('import-file').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                document.getElementById('geminiApiKey').value = data.geminiApiKey || '';
+                document.getElementById('userResume').value = data.userResume || '';
+                document.getElementById('fullName').value = data.fullName || '';
+                document.getElementById('email').value = data.email || '';
+                document.getElementById('phone').value = data.phone || '';
+                document.getElementById('linkedin').value = data.linkedin || '';
+                document.getElementById('location').value = data.location || '';
+                showMessage('Data loaded from file!', 'success');
+            } catch (err) {
+                showMessage('Invalid JSON file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    });
+
+    // Generate Cover Letter
+    document.getElementById('generate-cover').addEventListener('click', async () => {
+        const genCoverBtn = document.getElementById('generate-cover');
+        genCoverBtn.disabled = true;
+        const originalText = genCoverBtn.innerHTML;
+        genCoverBtn.innerHTML = '<span class="spinner"></span> Generating...';
+        const apiKey = document.getElementById('geminiApiKey').value.trim();
+        const jobDescription = document.getElementById('jobDescription').value.trim();
+        const userResume = document.getElementById('userResume').value.trim();
+        const fullName = document.getElementById('fullName').value.trim();
+        const linkedin = document.getElementById('linkedin').value.trim();
+        const jobType = getJobType();
+
+        if (!apiKey) {
+            showMessage('Please enter your Gemini API key.', 'error');
+            genCoverBtn.disabled = false;
+            genCoverBtn.innerHTML = originalText;
+            return;
+        }
+        if (!jobDescription) {
+            showMessage('Please paste the job description.', 'error');
+            genCoverBtn.disabled = false;
+            genCoverBtn.innerHTML = originalText;
+            return;
+        }
+        if (!userResume) {
+            showMessage('Please paste your existing resume.', 'error');
+            genCoverBtn.disabled = false;
+            genCoverBtn.innerHTML = originalText;
+            return;
+        }
+        showMessage('Generating cover letter with Gemini AI...', 'info');
+        try {
+            const prompt = getCoverLetterPrompt(jobType, userResume, jobDescription);
+            const aiCover = await callGeminiAI(prompt, apiKey);
+            // Replace placeholders locally and add proper formatting
+            const finalCover = aiCover
+                .replace(/\[Your Full Name\]/g, fullName)
+                .replace(/\[Your LinkedIn URL\]/g, linkedin);
+            lastAICoverText = finalCover;
+            
+            // Enhanced formatting for Australian professional standards
+            const formatted = finalCover
+                .split(/\n{2,}/).map(paragraph => {
+                    const trimmedParagraph = paragraph.trim();
+                    if (trimmedParagraph) {
+                        return `<p style="margin-bottom: 12px; line-height: 1.5;">${trimmedParagraph.replace(/\n/g, '<br>')}</p>`;
+                    }
+                    return '';
+                }).filter(p => p).join('');
+            
+            document.getElementById('cover-content').innerHTML = formatted;
+            document.getElementById('cover-preview').style.display = 'block';
+            showMessage('Cover letter generated with Gemini AI!', 'success');
+        } catch (e) {
+            showMessage('Gemini API error: ' + e.message, 'error');
+        } finally {
+            genCoverBtn.disabled = false;
+            genCoverBtn.innerHTML = originalText;
+        }
+    });
+
+    // Cover Letter Edit Functions
+    function toggleCoverEditMode(showEdit) {
+        const editBtn = document.getElementById('edit-cover');
+        const saveBtn = document.getElementById('save-cover-edits');
+        const cancelBtn = document.getElementById('cancel-cover-edits');
+        const editMode = document.getElementById('cover-edit-mode');
+        const coverContent = document.getElementById('cover-content');
+
+        if (showEdit) {
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+            editMode.style.display = 'block';
+            coverContent.style.display = 'none';
+            
+            // Populate the textarea with current cover letter content
+            const textarea = document.getElementById('cover-edit-textarea');
+            textarea.value = lastAICoverText || '';
+        } else {
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            editMode.style.display = 'none';
+            coverContent.style.display = 'block';
+        }
+    }
+
+    function saveCoverEdits() {
+        const textarea = document.getElementById('cover-edit-textarea');
+        const editedContent = textarea.value;
+        
+        // Update the stored cover letter text
+        lastAICoverText = editedContent;
+        
+        // Format and display the updated content with enhanced styling
+        const formatted = editedContent
+            .split(/\n{2,}/).map(paragraph => {
+                const trimmedParagraph = paragraph.trim();
+                if (trimmedParagraph) {
+                    return `<p style="margin-bottom: 12px; line-height: 1.5;">${trimmedParagraph.replace(/\n/g, '<br>')}</p>`;
+                }
+                return '';
+            }).filter(p => p).join('');
+        document.getElementById('cover-content').innerHTML = formatted;
+    }
+
+    // Cover Letter Edit Event Listeners
+    document.getElementById('edit-cover').addEventListener('click', () => {
+        if (lastAICoverText) {
+            toggleCoverEditMode(true);
+        } else {
+            showMessage('Please generate a cover letter first.', 'error');
+        }
+    });
+
+    document.getElementById('save-cover-edits').addEventListener('click', () => {
+        saveCoverEdits();
+        toggleCoverEditMode(false);
+        showMessage('Cover letter updated successfully!', 'success');
+    });
+
+    document.getElementById('cancel-cover-edits').addEventListener('click', () => {
+        toggleCoverEditMode(false);
+        showMessage('Edit cancelled.', 'info');
+    });
+    </script>
+</body>
+</html> 
