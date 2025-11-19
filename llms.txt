@@ -18,7 +18,7 @@ Founder of Opsbin (IT Support Services) and Bitstrail (Software Development Comp
 - Expertise: IT Security, DevOps, Cloud, GRC, Project Management, Web & Mobile Development
 - Experience: Career timeline and work history
 - Startups: Opsbin and Bitstrail business information
-- Projects: Portfolio of web applications and tools
+- Apps: Portfolio of web applications and tools
 - Contact: Contact information and social media links
 
 # Web Applications
@@ -54,7 +54,7 @@ The site hosts several free web applications:
 10. Daybook - Track income and expenses for small shops with invoice generation
     URL: https://robinthomasonline.github.io/apps/daybook/
 
-# External Projects
+# External Apps
 - Smart HOMI: https://smarthomi.app
 - Bookingtrails: https://bookingtrails.com
 

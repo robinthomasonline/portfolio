@@ -1,134 +1,135 @@
-// Typing Effect
-const texts = [
-    "Vibe Coder",
-    "Enterprenuer",
-    "GRC Consultant",
-    "Infrastructure Consultant",
-    "IT Specialist",
-    "Business Consultant",
-    "Security Specialist",
-    "Network Administrator",
-    "System Administrator",
-    "Cloud Engineer"
-];
-
-let roleIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-let typingDelay = 200;
-let erasingDelay = 100;
-let newTextDelay = 2000;
-
-function isVowel(char) {
-    return ['a', 'e', 'i', 'o', 'u'].includes(char.toLowerCase());
-}
-
-function updateStaticText(word) {
-    const staticText = document.querySelector('.static-text');
-    if (word && isVowel(word[0])) {
-        staticText.textContent = 'I am an';
-    } else {
-        staticText.textContent = 'I am a';
-    }
-}
-
-function typeEffect() {
-    const currentRole = texts[roleIndex];
-    const typingText = document.getElementById('typing-text');
+// Typing Animation
+document.addEventListener('DOMContentLoaded', () => {
+    const typingText = document.getElementById('typingText');
+    if (!typingText) return;
     
-    if (isDeleting) {
-        // Remove characters
-        typingText.textContent = currentRole.substring(0, charIndex - 1);
-        charIndex--;
-        typingDelay = erasingDelay;
-    } else {
-        // Add characters
-        typingText.textContent = currentRole.substring(0, charIndex + 1);
-        charIndex++;
-        typingDelay = 200;
+    const words = [
+        'Vibe Coder',
+        'Entrepreneur',
+        'GRC Consultant',
+        'Infrastructure Consultant',
+        'IT Specialist',
+        'Business Consultant',
+        'Security Specialist',
+        'Network Administrator',
+        'System Administrator',
+        'Cloud Engineer'
+    ];
+
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+
+    function type() {
+        const currentWord = words[wordIndex];
+        
+        if (isDeleting) {
+            typingText.textContent = currentWord.substring(0, charIndex - 1);
+            charIndex--;
+            typingSpeed = 50;
+        } else {
+            typingText.textContent = currentWord.substring(0, charIndex + 1);
+            charIndex++;
+            typingSpeed = 100;
+        }
+        
+        if (!isDeleting && charIndex === currentWord.length) {
+            typingSpeed = 2000; // Pause at end of word
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+            typingSpeed = 500; // Pause before next word
+        }
+        
+        setTimeout(type, typingSpeed);
     }
 
-    // Update static text based on the current word
-    updateStaticText(currentRole);
-
-    // If word is complete
-    if (!isDeleting && charIndex === currentRole.length) {
-        // Make pause at end
-        typingDelay = newTextDelay;
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        // Move to next word
-        roleIndex = (roleIndex + 1) % texts.length;
-        typingDelay = 500;
-    }
-
-    setTimeout(typeEffect, typingDelay);
-}
-
-// Start the typing effect
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize with the first word
-    updateStaticText(texts[0]);
-    setTimeout(typeEffect, newTextDelay);
+    // Start typing animation
+    type();
 });
 
-// Mobile Menu
-const menuBtn = document.querySelector('.menu-btn');
-const navLinks = document.querySelector('.nav-links');
-const closeIcon = document.querySelector('.close-icon');
-const socialIcons = document.querySelector('.social-icons');
-let menuOpen = false;
+// Sidebar Toggle
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+let isMinimized = false;
 
-menuBtn.addEventListener('click', () => {
-    if (!menuOpen) {
-        menuBtn.classList.add('open');
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = 'var(--nav-height)';
-        navLinks.style.left = '0';
-        navLinks.style.width = '100%';
-        navLinks.style.padding = '1rem';
-        navLinks.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        navLinks.style.backdropFilter = 'blur(10px)';
-        if (socialIcons) {
-            socialIcons.style.display = 'flex';
-            socialIcons.style.justifyContent = 'center';
-            socialIcons.style.padding = '1rem';
-            socialIcons.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-            socialIcons.style.backdropFilter = 'blur(10px)';
-        }
-        menuOpen = true;
-    } else {
-        menuBtn.classList.remove('open');
-        navLinks.style.display = 'none';
-        if (socialIcons) {
-            socialIcons.style.display = 'none';
-        }
-        menuOpen = false;
-    }
-});
-
-// Close menu when close icon is clicked
-if (closeIcon) {
-    closeIcon.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (menuOpen) {
-            menuBtn.classList.remove('open');
-            navLinks.style.display = 'none';
-            menuOpen = false;
-        }
+// Toggle sidebar minimize/maximize
+if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+        isMinimized = !isMinimized;
+        sidebar.classList.toggle('minimized', isMinimized);
+        document.body.classList.toggle('sidebar-minimized', isMinimized);
+        
+        // Save state to localStorage
+        localStorage.setItem('sidebarMinimized', isMinimized);
     });
 }
 
-// Close menu when a nav link is clicked (mobile only)
-document.querySelectorAll('.nav-links a').forEach(link => {
+// Load sidebar state from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const savedState = localStorage.getItem('sidebarMinimized');
+    if (savedState === 'true') {
+        isMinimized = true;
+        sidebar.classList.add('minimized');
+        document.body.classList.add('sidebar-minimized');
+    }
+});
+
+// Mobile sidebar toggle
+let mobileMenuBtn = null;
+
+function createMobileMenuButton() {
+    if (window.innerWidth <= 768 && !mobileMenuBtn) {
+        mobileMenuBtn = document.createElement('button');
+        mobileMenuBtn.className = 'mobile-menu-btn';
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        mobileMenuBtn.style.cssText = `
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            backdrop-filter: blur(10px);
+        `;
+        document.body.appendChild(mobileMenuBtn);
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+        });
+    } else if (window.innerWidth > 768 && mobileMenuBtn) {
+        mobileMenuBtn.remove();
+        mobileMenuBtn = null;
+    }
+}
+
+// Create mobile menu button on load and resize
+createMobileMenuButton();
+window.addEventListener('resize', createMobileMenuButton);
+
+// Close sidebar when overlay is clicked
+if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+    });
+}
+
+// Close mobile sidebar when nav link is clicked
+document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
-        if (window.innerWidth <= 768 && menuOpen) {
-            menuBtn.classList.remove('open');
-            navLinks.style.display = 'none';
-            menuOpen = false;
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
         }
     });
 });
@@ -150,14 +151,26 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Navbar Background Change on Scroll
+// Update active nav link on scroll
 window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-    } else {
-        navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    }
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 200) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
+    });
 });
 
 // Contact Form Handling
@@ -243,19 +256,14 @@ if (isMobile()) {
     document.body.style.cursor = 'auto';
 }
 
-// Hide scroll indicator when scrolling starts
-const scrollIndicator = document.querySelector('.scroll-indicator');
-let scrollTimeout;
-
-window.addEventListener('scroll', () => {
-    // Hide the scroll indicator immediately when scrolling starts
-    scrollIndicator.style.opacity = '0';
+// Experience Cards Expand/Collapse
+document.addEventListener('DOMContentLoaded', () => {
+    const experienceCards = document.querySelectorAll('.experience-card');
     
-    // Clear the previous timeout
-    clearTimeout(scrollTimeout);
-    
-    // Show the scroll indicator again after scrolling stops for 2 seconds
-    scrollTimeout = setTimeout(() => {
-        scrollIndicator.style.opacity = '0.8';
-    }, 2000);
+    experienceCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Toggle expanded class
+            card.classList.toggle('expanded');
+        });
+    });
 }); 
